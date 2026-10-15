@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>228冯子格</title>
+    <style>
+        /* h2 设置黑底白字 */
+        h2{
+            color: #fff;
+            background-color: rgb(2, 2, 2);
+        }
+        p{
+            color: rgb(248, 248, 251);
+        }
+        /*标签选择器，选择器名称为标签 */
+        #box{
+            width: 500px;
+            height: 500px;
+            background-color:#ccc;
+        }
+        .n1{
+            color: #7A9;
+        }
+        .n2{
+            color: rgb(193, 227, 82);
+        }
+        .n3{
+            color: rgb(242, 246, 42);
+        }
+        /* 选择器三个字白色 */
+        h3 {
+            color: #ffffff;
+        }
+        /* 让名字三个span同一行，清除p标签换行 */
+        .name-row p {
+            display: inline-block;
+        }
+        /* 新增加学号盒子样式 */
+        .stu-box {
+            width: 300px;
+            height: 120px;
+            background-color: #87ceeb;
+            margin-top:20px;
+            line-height:120px;
+            text-align:center;
+            font-size:22px;
+        }
+    </style>
+</head>
+<body>
+    <h2>层叠样式表</h2>
+    <div id="box">
+        <h3>CSS选择器</h3>
+        <!-- 名字放在同一行 -->
+        <div class="name-row">
+            <p><span class="n1">冯</span></p>
+            <p><span class="n2">子</span></p>
+            <p><span class="n3">格</span></p>
+        </div>
+        <p>CSS属性</p>
+    </div>
+    <!-- 新增学号盒子 -->
+    <div class="stu-box">24006340228</div>
+    
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>css3</title>
+    <style>
+        .main{
+            margin: 10px;;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .box{
+            width: 150px;
+            height: 150px;
+            border: 1px solid #ccc;
+            display: flex;
+            margin: 10px;
+            /* 水平垂直居中 */
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            transition: all 0.6s;
+            box-sizing: border-box;
+        }
+        .box:first-child:hover{
+            background: red;
+            color: white;
+            font-size: 140px;
+        }
+        .box:nth-child(2):hover{
+            border-radius: 50%;
+            border-width: 10px;
+        }
+        .box:nth-child(3):hover{
+            box-shadow: 10px 10px 10px #ccc;
+        }
+        .box:nth-child(4):hover{
+            text-shadow: 100px 10px 10px #ccc;
+        }
+        .box:nth-child(5):hover{
+           /* 线性渐变 */
+           background:linear-gradient(#000,#ccc,#fff)
+        }
+        .box:nth-child(6):hover{
+            /* 径向渐变 */
+            background:radial-gradient(#fff,#ccc,#000)
+        }
+        /* 相邻兄弟选择器
+        +后面的那个兄弟
+        ~后面的所有兄弟 */
+        .box:nth-child(7):hover{
+           transform: scale(0.5);
+        }
+        .box:nth-child(8):hover{
+           transform: translateX(-150px);
+        }
+        .box:nth-child(9):hover{
+           transform:rotateZ(-180deg);
+        }
+        .box:nth-child(10):hover{
+            transform:skewX(20deg) translateY(50px);
+        }
+        .box:nth-last-child(2):hover::before{
+           content:"*";
+           color:red;
+        }
+        .box:nth-child(12):hover::after{
+           content:"冯子格";
+           display:block;
+           padding:5px 10px;
+           font-size:16px;
+        }
+        .box:nth-child(3n):hover{
+           border:3px solid red;
+        }
+        /* 扩展2；鼠标在偶数上的盒子上时，自定义效果 */
+        .box:nth-child(even):hover{
+            background-color: #87CEFA;
+            color: #0000cd;
+            transform: rotate(10deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="box">1</div>
+        <div class="box">2</div>
+        <div class="box">3</div>
+        <div class="box">4</div>
+        <div class="box">5</div>
+        <div class="box">6</div>
+        <div class="box">7</div>
+        <div class="box">8</div>
+        <div class="box">9</div>
+        <div class="box">10</div>
+        <div class="box">11</div>
+        <div class="box">12</div>
+    </div>
+</body>
+</html>

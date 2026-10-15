@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="《高级网页设计》课堂实践作品集与网页导航">
+    <title>高级网页设计 · 课堂实践</title>
+    <style>
+        :root {
+            --ink: #1d2a3a;
+            --muted: #647287;
+            --paper: #f7f4ed;
+            --cream: #fffdf8;
+            --blue: #2455a4;
+            --blue-deep: #193968;
+            --coral: #df735d;
+            --line: #d9d6cd;
+            --shadow: 0 18px 50px rgba(29, 42, 58, 0.11);
+        }
+
+        * { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            margin: 0;
+            color: var(--ink);
+            background: var(--paper);
+            font-family: Georgia, "Times New Roman", "Microsoft YaHei", serif;
+            line-height: 1.6;
+        }
+
+        a { color: inherit; }
+
+        .page-shell {
+            min-height: 100vh;
+            background:
+                linear-gradient(135deg, rgba(36, 85, 164, 0.08) 0 1px, transparent 1px 100%),
+                var(--paper);
+            background-size: 28px 28px;
+        }
+
+        header {
+            position: relative;
+            overflow: hidden;
+            padding: 22px clamp(24px, 7vw, 104px) 54px;
+            color: var(--cream);
+            background: var(--blue-deep);
+        }
+
+        header::after {
+            position: absolute;
+            right: 7vw;
+            bottom: -92px;
+            width: 240px;
+            height: 240px;
+            border: 1px solid rgba(255, 253, 248, 0.28);
+            border-radius: 50%;
+            content: "";
+        }
+
+        .topline {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            max-width: 1120px;
+            margin: 0 auto 42px;
+            color: #b9cae6;
+            font-family: "Microsoft YaHei", sans-serif;
+            font-size: 12px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        .hero {
+            position: relative;
+            z-index: 1;
+            max-width: 1120px;
+            margin: 0 auto;
+        }
+
+        .eyebrow {
+            margin: 0 0 12px;
+            color: #f2b9a7;
+            font-family: "Microsoft YaHei", sans-serif;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 0.18em;
+        }
+
+        h1 {
+            max-width: 800px;
+            margin: 0;
+            font-size: clamp(36px, 5vw, 64px);
+            font-weight: normal;
+            letter-spacing: -0.03em;
+            line-height: 1.06;
+        }
+
+        .hero-intro {
+            max-width: 610px;
+            margin: 16px 0 0;
+            color: #dce6f3;
+            font-family: "Microsoft YaHei", sans-serif;
+            font-size: 16px;
+        }
+
+        main {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 0 24px 72px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.5fr) minmax(270px, 0.8fr);
+            gap: 24px;
+            align-items: start;
+        }
+
+        .panel {
+            border: 1px solid var(--line);
+            background: rgba(255, 253, 248, 0.94);
+            box-shadow: var(--shadow);
+        }
+
+        .works-panel { padding: clamp(24px, 4vw, 42px); }
+
+        .section-heading {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 16px;
+        }
+
+        h2, h3 { margin: 0; font-weight: normal; }
+
+        h2 { font-size: 28px; }
+
+        .section-heading span {
+            color: var(--muted);
+            font-family: "Microsoft YaHei", sans-serif;
+            font-size: 12px;
+        }
+
+        .work-list {
+            display: grid;
+            gap: 12px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .work-link {
+            display: grid;
+            grid-template-columns: 48px 1fr auto;
+            gap: 18px;
+            align-items: center;
+            min-height: 76px;
+            border-top: 1px solid var(--line);
+            padding: 12px 0;
+            text-decoration: none;
+            transition: color 180ms ease, transform 180ms ease;
+        }
+
+        .work-link:hover, .work-link:focus-visible {
+            color: var(--blue);
+            transform: translateX(6px);
+            outline: none;
+        }
+
+        .number {
+            color: var(--coral);
+            font-size: 18px;
+            font-style: italic;
+        }
+
+        .work-title {
+            display: block;
+            font-size: 20px;
+        }
+
+        .work-note {
+            display: block;
+            margin-top: 3px;
+            color: var(--muted);
+            font-family: "Microsoft YaHei", sans-serif;
+            font-size: 12px;
+        }
+
+        .arrow {
+            color: var(--blue);
+            font-family: sans-serif;
+            font-size: 22px;
+        }
+
+        .side-column { display: grid; gap: 24px; }
+
+        .info-panel { padding: 28px; }
+
+        .info-panel h2 { margin-bottom: 16px; font-size: 23px; }
+
+        .info-panel p {
+            margin: 0;
+            color: var(--muted);
+            font-family: "Microsoft YaHei", sans-serif;
+            font-size: 14px;
+        }
+
+        .tag {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 6px 10px;
+            color: var(--blue-deep);
+            border: 1px solid #b9cae6;
+            background: #edf3fc;
+            font-family: "Microsoft YaHei", sans-serif;
+            font-size: 12px;
+        }
+
+        .prompt-panel {
+            border-color: var(--blue);
+            background: var(--blue);
+            color: var(--cream);
+        }
+
+        .prompt-panel h2 { color: #f2b9a7; }
+
+        .prompt-panel p { color: #e2eaf5; }
+
+        footer {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 0 24px 34px;
+            color: var(--muted);
+            font-family: "Microsoft YaHei", sans-serif;
+            font-size: 12px;
+        }
+
+        @media (max-width: 720px) {
+            header { padding: 22px 24px 42px; }
+            .topline { margin-bottom: 36px; }
+            .content-grid { grid-template-columns: 1fr; }
+            .work-link { grid-template-columns: 36px 1fr auto; gap: 10px; }
+            .work-title { font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-shell">
+        <header>
+            <div class="topline">
+                <span>Advanced Web Design</span>
+                <span>Classroom Practice / 2026</span>
+            </div>
+            <div class="hero">
+                <p class="eyebrow">《高级网页设计》课堂实践</p>
+                <h1>课堂实践<br>作品导航</h1>
+                <p class="hero-intro">把每一次标签、表单与样式练习，整理成一份可以继续生长的网页档案。</p>
+            </div>
+        </header>
+
+        <main>
+            <div class="content-grid">
+                <section class="panel works-panel" aria-labelledby="works-title">
+                    <div class="section-heading">
+                        <h2 id="works-title">网页作品集</h2>
+                        <span>共 14 项实践</span>
+                    </div>
+                    <nav aria-label="本目录网页链接">
+                        <ul class="work-list">
+                            <li><a class="work-link" href="1.html"><span class="number">01</span><span><span class="work-title">基础网页实践</span><span class="work-note">1.html · HTML 入门页面</span></span><span class="arrow">↗</span></a></li>
+                            <li><a class="work-link" href="2-1.html"><span class="number">02</span><span><span class="work-title">网页结构练习</span><span class="work-note">2-1.html · 页面内容组织</span></span><span class="arrow">↗</span></a></li>
+                            <li><a class="work-link" href="2-2.html"><span class="number">03</span><span><span class="work-title">页面元素实践</span><span class="work-note">2-2.html · HTML 元素应用</span></span><span class="arrow">↗</span></a></li>
+                            <li><a class="work-link" href="3-1 form.html"><span class="number">04</span><span><span class="work-title">交互表单设计</span><span class="work-note">3-1 form.html · 表单与输入控件</span></span><span class="arrow">↗</span></a></li>
+                            <li><a class="work-link" href="3-2 css.html"><span class="number">05</span><span><span class="work-title">CSS 选择器练习</span><span class="work-note">3-2 css.html · 选择器与样式表</span></span><span class="arrow">↗</span></a></li>
+                            <li><a class="work-link" href="4-1 css.html"><span class="number">06</span><span><span class="work-title">CSS 进阶实践</span><span class="work-note">4-1 css.html · 群组与后代选择器</span></span><span class="arrow">↗</span></a></li>
+                            <li><a class="work-link" href="5-1 层叠与继承.html"><span class="number">07</span><span><span class="work-title">层叠与继承</span><span class="work-note">5-1 层叠与继承.html · CSS 层叠规则</span></span><span class="arrow">↗</span></a></li>
+                            <li><a class="work-link" href="5-2 盒模型.html"><span class="number">08</span><span><span class="work-title">盒模型实践</span><span class="work-note">5-2 盒模型.html · 边框、内边距与外边距</span></span><span class="arrow">↗</span></a></li>
+                            <li><a class="work-link" href="6-1 flex.html"><span class="number">09</span><span><span class="work-title">Flex 弹性布局</span><span class="work-note">6-1 flex.html · Flex 容器与项目排列</span></span><span class="arrow">↗</span></a></li>
+                            <li><a class="work-link" href="6-2一左一右.html"><span class="number">10</span><span><span class="work-title">一左一右布局</span><span class="work-note">6-2一左一右.html · Flex 对齐实践</span></span><span class="arrow">↗</span></a></li>
+                            <li><a class="work-link" href="7-1 上图下文.html"><span class="number">11</span><span><span class="work-title">上图下文布局</span><span class="work-note">7-1 上图下文.html · 图片与文字叠加</span></span><span class="arrow">↗</span></a></li>
+                            <li><a class="work-link" href="7-2 左图右文.html"><span class="number">12</span><span><span class="work-title">左图右文布局</span><span class="work-note">7-2 左图右文.html · 图片与文字排列</span></span><span class="arrow">↗</span></a></li>
+                            <li><a class="work-link" href="8-1 css3 选择器.html"><span class="number">13</span><span><span class="work-title">CSS3 选择器</span><span class="work-note">8-1 css3 选择器.html · 新增选择器与伪类</span></span><span class="arrow">↗</span></a></li>
+                            <li><a class="work-link" href="9-1 transition.html"><span class="number">14</span><span><span class="work-title">过渡动画实践</span><span class="work-note">9-1 transition.html · transition 过渡效果</span></span><span class="arrow">↗</span></a></li>
+                        </ul>
+                    </nav>
+                </section>
+
+                <aside class="side-column">
+                    <section class="panel info-panel">
+                        <h2>实践档案</h2>
+                        <p>主题：《高级网页设计》课堂实践</p>
+                        <p>学生：冯子格　学号：228</p>
+                        <p>形式：原生 HTML + CSS</p>
+                        <p>范围：当前目录全部网页</p>
+                        <span class="tag">LOCAL / NO CDN</span>
+                    </section>
+                    <section class="panel info-panel prompt-panel">
+                        <h2>本次任务</h2>
+                        <p>“创建一个新页面，包括本目录下的所有网页的超链接，使用原生代码，不使用cdn，新页面名称为index.html，主题为《高级网页设计》课堂实践，美化页面，页面中包括本提示词。”</p>
+                    </section>
+                </aside>
+            </div>
+        </main>
+
+        <footer>© 《高级网页设计》课堂实践 · 本地网页导航</footer>
+    </div>
+</body>
+</html>
