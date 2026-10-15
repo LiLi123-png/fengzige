@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS 变量 - 冯子格</title>
+  <style>
+    /* 全局变量定义在 :root 中 */
+    :root {
+      --primary-color: #4a90e2;
+      --secondary-color: #f5a623;
+      --bg-color: #f0f2f5;
+      --text-color: #333;
+      --card-bg: #ffffff;
+      --border-radius: 8px;
+      --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      --spacing: 16px;
+      --font-size: 16px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-size: var(--font-size);
+      padding: var(--spacing);
+      font-family: "Microsoft YaHei", sans-serif;
+    }
+
+    h2 {
+      margin-bottom: var(--spacing);
+      color: var(--primary-color);
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: var(--spacing);
+      margin-bottom: var(--spacing);
+    }
+
+    .card h3 {
+      color: var(--secondary-color);
+      margin-bottom: 8px;
+    }
+
+    .btn {
+      background-color: var(--primary-color);
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-size: 14px;
+      margin: 4px;
+    }
+
+    .btn:hover {
+      opacity: 0.85;
+    }
+
+    /* 局部变量：仅在 .dark 作用域内生效 */
+    .dark {
+      --bg-color: #2c2c2c;
+      --text-color: #eee;
+      --card-bg: #3a3a3a;
+    }
+
+    .row {
+      display: flex;
+      gap: var(--spacing);
+      flex-wrap: wrap;
+    }
+
+    .box {
+      flex: 1;
+      min-width: 120px;
+      height: 80px;
+      background-color: var(--primary-color);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--border-radius);
+      font-size: 14px;
+    }
+
+    .fallback {
+      /* 使用 var() 的回退值：当变量未定义时使用回退值 */
+      color: var(--undefined-color, #e74c3c);
+      font-weight: bold;
+    }
+
+    pre {
+      background-color: #2d2d2d;
+      color: #ccc;
+      padding: 12px;
+      border-radius: var(--border-radius);
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>CSS 变量（Custom Properties）演示 - 冯子格</h2>
+
+    <div class="card">
+      <h3>1. 基本用法</h3>
+      <p>在 <code>:root</code> 中定义变量，用 <code>var(--变量名)</code> 引用。本页的背景色、文字色、圆角、阴影等都来自 CSS 变量。</p>
+    </div>
+
+    <div class="card">
+      <h3>2. 变量作用域</h3>
+      <p>点击按钮切换深色模式 —— 通过修改父级作用域的变量，所有子元素自动生效：</p>
+      <button class="btn" onclick="document.body.classList.toggle('dark')">切换深色 / 浅色</button>
+    </div>
+
+    <div class="card">
+      <h3>3. 变量回退值</h3>
+      <p class="fallback">这段文字颜色使用了未定义的变量，回退为红色 #e74c3c。</p>
+    </div>
+
+    <div class="card">
+      <h3>4. 变量复用</h3>
+      <div class="row">
+        <div class="box">box 1</div>
+        <div class="box">box 2</div>
+        <div class="box">box 3</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>5. 代码示例</h3>
+      <pre>:root {
+  --primary-color: #4a90e2;
+  --spacing: 16px;
+}
+
+.card {
+  background: var(--card-bg);
+  padding: var(--spacing);
+  color: var(--undefined-color, #e74c3c); /* 带回退值 */
+}</pre>
+    </div>
+
+    <div class="card">
+      <h3>6. JavaScript 操作变量</h3>
+      <p>通过 JS 读取 / 修改 CSS 变量：</p>
+      <button class="btn" onclick="changePrimary()">随机改变主色调</button>
+    </div>
+  </div>
+
+  <script>
+    function changePrimary() {
+      var r = Math.floor(Math.random() * 256);
+      var g = Math.floor(Math.random() * 256);
+      var b = Math.floor(Math.random() * 256);
+      document.documentElement.style.setProperty('--primary-color',
+        'rgb(' + r + ',' + g + ',' + b + ')');
+    }
+  </script>
+</body>
+</html>
