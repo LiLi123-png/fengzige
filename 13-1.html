@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Font Awesome 字体图标 - 冯子格</title>
+  <!-- Font Awesome 6 免费版 - 字体图标模式（CSS + webfonts） -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+      color: #333;
+    }
+    h2 { margin-bottom: 20px; color: #4a90e2; }
+    .section {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .section h3 {
+      margin-bottom: 14px;
+      color: #f5a623;
+    }
+    .icons-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: center;
+    }
+    .icon-item {
+      text-align: center;
+      width: 100px;
+    }
+    .icon-item i {
+      font-size: 32px;
+      color: #4a90e2;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .icon-item span {
+      font-size: 12px;
+      color: #888;
+      display: block;
+      word-break: break-all;
+    }
+    /* 颜色示例 */
+    .c-red    { color: #e74c3c; }
+    .c-green  { color: #27ae60; }
+    .c-blue   { color: #2980b9; }
+    .c-orange { color: #f39c12; }
+    .c-purple { color: #9b59b6; }
+    /* 动画 */
+    .spin  { animation: fa-spin 2s infinite linear; }
+    .pulse { animation: fa-beat 1s infinite; }
+    .border-box {
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 4px;
+      background: #fafafa;
+      text-align: center;
+    }
+    .border-box i { color: #888; }
+  </style>
+</head>
+<body>
+  <div style="max-width: 900px; margin: 0 auto;">
+    <h2>Font Awesome 字体图标演示 - 冯子格</h2>
+
+    <div class="section">
+      <h3>1. 基础 Solid 图标（免费）</h3>
+      <div class="icons-row">
+        <div class="icon-item"><i class="fa-solid fa-user"></i><span>user</span></div>
+        <div class="icon-item"><i class="fa-solid fa-heart"></i><span>heart</span></div>
+        <div class="icon-item"><i class="fa-solid fa-star"></i><span>star</span></div>
+        <div class="icon-item"><i class="fa-solid fa-home"></i><span>home</span></div>
+        <div class="icon-item"><i class="fa-solid fa-search"></i><span>search</span></div>
+        <div class="icon-item"><i class="fa-solid fa-cog"></i><span>cog</span></div>
+        <div class="icon-item"><i class="fa-solid fa-bell"></i><span>bell</span></div>
+        <div class="icon-item"><i class="fa-solid fa-envelope"></i><span>envelope</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>2. Regular 图标（免费部分可用）</h3>
+      <div class="icons-row">
+        <div class="icon-item"><i class="fa-regular fa-user"></i><span>user</span></div>
+        <div class="icon-item"><i class="fa-regular fa-heart"></i><span>heart</span></div>
+        <div class="icon-item"><i class="fa-regular fa-star"></i><span>star</span></div>
+        <div class="icon-item"><i class="fa-regular fa-envelope"></i><span>envelope</span></div>
+        <div class="icon-item"><i class="fa-regular fa-comment"></i><span>comment</span></div>
+        <div class="icon-item"><i class="fa-regular fa-calendar"></i><span>calendar</span></div>
+        <div class="icon-item"><i class="fa-regular fa-file"></i><span>file</span></div>
+        <div class="icon-item"><i class="fa-regular fa-image"></i><span>image</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>3. Brands 品牌图标</h3>
+      <div class="icons-row">
+        <div class="icon-item"><i class="fa-brands fa-github"></i><span>github</span></div>
+        <div class="icon-item"><i class="fa-brands fa-weixin"></i><span>weixin</span></div>
+        <div class="icon-item"><i class="fa-brands fa-weibo"></i><span>weibo</span></div>
+        <div class="icon-item"><i class="fa-brands fa-html5"></i><span>html5</span></div>
+        <div class="icon-item"><i class="fa-brands fa-css3-alt"></i><span>css3-alt</span></div>
+        <div class="icon-item"><i class="fa-brands fa-js"></i><span>js</span></div>
+        <div class="icon-item"><i class="fa-brands fa-python"></i><span>python</span></div>
+        <div class="icon-item"><i class="fa-brands fa-java"></i><span>java</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>4. 大小变化（fa-sm / md / lg / 2x~10x）</h3>
+      <div class="icons-row" style="align-items: baseline;">
+        <div class="icon-item"><i class="fa-solid fa-circle fa-sm"></i><span>sm</span></div>
+        <div class="icon-item"><i class="fa-solid fa-circle fa-2xs"></i><span>2xs</span></div>
+        <div class="icon-item"><i class="fa-solid fa-circle fa-xs"></i><span>xs</span></div>
+        <div class="icon-item"><i class="fa-solid fa-circle"></i><span>默认</span></div>
+        <div class="icon-item"><i class="fa-solid fa-circle fa-lg"></i><span>lg</span></div>
+        <div class="icon-item"><i class="fa-solid fa-circle fa-xl"></i><span>xl</span></div>
+        <div class="icon-item"><i class="fa-solid fa-circle fa-2xl"></i><span>2xl</span></div>
+        <div class="icon-item"><i class="fa-solid fa-circle fa-2x"></i><span>2x</span></div>
+        <div class="icon-item"><i class="fa-solid fa-circle fa-3x"></i><span>3x</span></div>
+        <div class="icon-item"><i class="fa-solid fa-circle fa-5x"></i><span>5x</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>5. 颜色与动画</h3>
+      <div class="icons-row">
+        <div class="icon-item"><i class="fa-solid fa-circle c-red"></i><span>红色</span></div>
+        <div class="icon-item"><i class="fa-solid fa-circle c-green"></i><span>绿色</span></div>
+        <div class="icon-item"><i class="fa-solid fa-circle c-blue"></i><span>蓝色</span></div>
+        <div class="icon-item"><i class="fa-solid fa-circle c-orange"></i><span>橙色</span></div>
+        <div class="icon-item"><i class="fa-solid fa-circle c-purple"></i><span>紫色</span></div>
+        <div class="icon-item"><i class="fa-solid fa-spinner fa-spin c-blue"></i><span>旋转</span></div>
+        <div class="icon-item"><i class="fa-solid fa-heart fa-pulse c-red"></i><span>跳动</span></div>
+        <div class="icon-item"><i class="fa-solid fa-bell c-orange"></i><span>普通</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>6. 边框 / 固定宽度 / 翻转 / 旋转</h3>
+      <div class="icons-row">
+        <div class="icon-item border-box" style="width:auto;"><i class="fa-solid fa-user fa-border"></i><span>边框</span></div>
+        <div class="icon-item"><i class="fa-solid fa-arrow-right fa-flip-horizontal"></i><span>水平翻转</span></div>
+        <div class="icon-item"><i class="fa-solid fa-arrow-up fa-rotate-90"></i><span>旋转 90°</span></div>
+        <div class="icon-item"><i class="fa-solid fa-grip fa-fw"></i><span>fw 等宽</span></div>
+        <div class="icon-item"><i class="fa-solid fa-quote-left fa-2x"></i><span>引用</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>CDN 信息</h3>
+      <pre style="background:#2d2d2d;color:#ccc;padding:12px;border-radius:6px;font-size:13px;overflow-x:auto;">Font Awesome 6.5.1（免费版字体图标模式）
+CDN: https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css
+用法: <i class="fa-solid fa-xxx"></i>
+风格: fa-solid / fa-regular / fa-brands</pre>
+    </div>
+  </div>
+</body>
+</html>
