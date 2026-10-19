@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>下导航 - 字体图标方式 - 冯子格</title>
+  <style>
+    /* ========= iconfont 风格的字体图标 ========= */
+    .icon {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      vertical-align: middle;
+    }
+    .icon-home    { background-image: url("./font/首页.png"); }
+    .icon-search  { background-image: url("./font/搜索.png"); }
+    .icon-cart    { background-image: url("./font/购物车.png"); }
+    .icon-mine    { background-image: url("./font/我的.png"); }
+
+    /* ========= 页面 ========= */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Microsoft YaHei", sans-serif;
+      background: #f5f6f8;
+      padding-bottom: 70px;
+    }
+    .page-content { padding: 16px; line-height: 2; color: #555; }
+    .page-content h1 { font-size: 18px; margin-bottom: 12px; color: #333; }
+    .page-content p { font-size: 14px; }
+
+    /* ========= 下导航 ========= */
+    .tab-bar {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      width: 100%;
+      height: 60px;
+      background: #fff;
+      border-top: 1px solid #eee;
+      display: flex;
+      padding-bottom: env(safe-area-inset-bottom);
+      z-index: 999;
+    }
+    .tab-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #999;
+      gap: 3px;
+      cursor: pointer;
+    }
+    /* 图标容器：作为红点/徽章的定位基准 */
+    .icon-wrap {
+      position: relative;
+      width: 28px;   /* 略大于图标，给徽章留空间 */
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .icon-wrap .icon {
+      filter: grayscale(1) brightness(0.45);
+      transition: filter 0.2s;
+    }
+    /* 选中态 */
+    .tab-item.active { color: #4a90e2; }
+    .tab-item.active .icon-wrap .icon {
+      /* 用 CSS filter 把黑色 PNG 染成主题蓝色 */
+      filter: invert(38%) sepia(82%) saturate(1356%) hue-rotate(208deg) brightness(96%) contrast(95%);
+    }
+
+    /* 红点 */
+    .icon-wrap .dot {
+      position: absolute;
+      top: 0;
+      right: -2px;
+      width: 8px; height: 8px;
+      background: #ff3b30;
+      border-radius: 50%;
+      box-shadow: 0 0 0 1px #fff;
+      display: none;
+    }
+    .icon-wrap.has-dot .dot { display: block; }
+
+    /* 数字徽章 */
+    .icon-wrap .badge {
+      position: absolute;
+      top: -4px;
+      right: -12px;
+      min-width: 16px;
+      height: 16px;
+      line-height: 16px;
+      padding: 0 5px;
+      background: #ff3b30;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 600;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 0 0 1px #fff;
+      display: none;
+      white-space: nowrap;
+    }
+    .icon-wrap.has-badge .badge { display: block; }
+    .icon-wrap.has-badge[data-badge="99+"] .badge { min-width: 22px; }
+
+    .tab-item .label { font-size: 12px; }
+  </style>
+</head>
+<body>
+
+  <div class="page-content">
+    <h1>底部导航 — 字体图标方式（iconfont 模拟）</h1>
+    <p>图标来源：<code>./font/</code> 目录下的 PNG 文件，通过 CSS <code>background-image</code> + 类名方式调用，模拟 iconfont 的使用模式。</p>
+    <br>
+    <p>✓ 移动端自适应（viewport meta + flex 均分）</p>
+    <p>✓ 全屏宽度 fixed 定位</p>
+    <p>✓ 数字徽章（购物车 12 / 搜索 99+）</p>
+    <p>✓ 右上角红点（首页）</p>
+    <p>✓ 选中态通过 CSS filter 染成主题色</p>
+    <p>✓ iOS 安全区适配（env safe-area-inset）</p>
+    <br>
+    <p>点击下方导航项试试看。</p>
+  </div>
+
+  <nav class="tab-bar">
+
+    <div class="tab-item active" data-tab="home">
+      <span class="icon-wrap has-dot">
+        <i class="icon icon-home"></i>
+        <span class="dot"></span>
+      </span>
+      <span class="label">首页</span>
+    </div>
+
+    <div class="tab-item" data-tab="search">
+      <span class="icon-wrap has-badge" data-badge="99+">
+        <i class="icon icon-search"></i>
+        <span class="badge">99+</span>
+      </span>
+      <span class="label">搜索</span>
+    </div>
+
+    <div class="tab-item" data-tab="cart">
+      <span class="icon-wrap has-badge">
+        <i class="icon icon-cart"></i>
+        <span class="badge">12</span>
+      </span>
+      <span class="label">购物车</span>
+    </div>
+
+    <div class="tab-item" data-tab="mine">
+      <span class="icon-wrap">
+        <i class="icon icon-mine"></i>
+      </span>
+      <span class="label">我的</span>
+    </div>
+
+  </nav>
+
+  <script>
+    document.querySelectorAll('.tab-item').forEach(function(el) {
+      el.addEventListener('click', function() {
+        document.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
+        el.classList.add('active');
+      });
+    });
+  </script>
+
+</body>
+</html>

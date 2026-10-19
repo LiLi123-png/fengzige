@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>下导航 - SVG 方式 - 冯子格</title>
+  <style>
+    /* ========= 页面 ========= */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Microsoft YaHei", sans-serif;
+      background: #f5f6f8;
+      padding-bottom: 70px;
+    }
+    .page-content { padding: 16px; line-height: 2; color: #555; }
+    .page-content h1 { font-size: 18px; margin-bottom: 12px; color: #333; }
+    .page-content p { font-size: 14px; }
+
+    /* ========= 下导航 ========= */
+    .tab-bar {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      width: 100%;
+      height: 60px;
+      background: #fff;
+      border-top: 1px solid #eee;
+      display: flex;
+      padding-bottom: env(safe-area-inset-bottom);
+      z-index: 999;
+    }
+    .tab-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #999;
+      gap: 3px;
+      cursor: pointer;
+    }
+
+    /* 图标容器 —— 红点 / 徽章 的定位基准 */
+    .icon-wrap {
+      position: relative;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* 内嵌 SVG 统一尺寸 */
+    .icon-wrap svg {
+      width: 24px;
+      height: 24px;
+      display: block;
+      /* 未选中：灰色 */
+      filter: grayscale(1) brightness(0.45);
+      transition: filter 0.2s;
+    }
+    /* 选中态 */
+    .tab-item.active { color: #4a90e2; }
+    .tab-item.active .icon-wrap svg {
+      filter: invert(38%) sepia(82%) saturate(1356%) hue-rotate(208deg) brightness(96%) contrast(95%);
+    }
+
+    /* 红点 */
+    .icon-wrap .dot {
+      position: absolute;
+      top: 0;
+      right: -2px;
+      width: 8px; height: 8px;
+      background: #ff3b30;
+      border-radius: 50%;
+      box-shadow: 0 0 0 1px #fff;
+      display: none;
+    }
+    .icon-wrap.has-dot .dot { display: block; }
+
+    /* 数字徽章 */
+    .icon-wrap .badge {
+      position: absolute;
+      top: -4px;
+      right: -12px;
+      min-width: 16px;
+      height: 16px;
+      line-height: 16px;
+      padding: 0 5px;
+      background: #ff3b30;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 600;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 0 0 1px #fff;
+      display: none;
+      white-space: nowrap;
+    }
+    .icon-wrap.has-badge .badge { display: block; }
+
+    .tab-item .label { font-size: 12px; }
+  </style>
+</head>
+<body>
+
+  <div class="page-content">
+    <h1>底部导航 — SVG 方式</h1>
+    <p>图标来源：<code>./font/</code> 目录下的 PNG 文件，通过内联 SVG 的 <code>&lt;image href&gt;</code> 嵌入。</p>
+    <br>
+    <p>✓ 移动端自适应（viewport meta + flex 均分）</p>
+    <p>✓ 全屏宽度 fixed 定位</p>
+    <p>✓ SVG 容器支持 filter / 过渡动画 / 尺寸缩放</p>
+    <p>✓ 数字徽章 + 右上角红点</p>
+    <p>✓ iOS 安全区适配</p>
+    <br>
+    <p>与 13-3.html 的核心区别：图标渲染方式不同。</p>
+  </div>
+
+  <nav class="tab-bar">
+
+    <div class="tab-item active" data-tab="home">
+      <span class="icon-wrap has-dot">
+        <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <image href="./font/首页.png" width="48" height="48" />
+        </svg>
+        <span class="dot"></span>
+      </span>
+      <span class="label">首页</span>
+    </div>
+
+    <div class="tab-item" data-tab="search">
+      <span class="icon-wrap has-badge">
+        <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <image href="./font/搜索.png" width="48" height="48" />
+        </svg>
+        <span class="badge">99+</span>
+      </span>
+      <span class="label">搜索</span>
+    </div>
+
+    <div class="tab-item" data-tab="cart">
+      <span class="icon-wrap has-badge">
+        <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <image href="./font/购物车.png" width="48" height="48" />
+        </svg>
+        <span class="badge">12</span>
+      </span>
+      <span class="label">购物车</span>
+    </div>
+
+    <div class="tab-item" data-tab="mine">
+      <span class="icon-wrap">
+        <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <image href="./font/我的.png" width="48" height="48" />
+        </svg>
+      </span>
+      <span class="label">我的</span>
+    </div>
+
+  </nav>
+
+  <script>
+    document.querySelectorAll('.tab-item').forEach(function(el) {
+      el.addEventListener('click', function() {
+        document.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
+        el.classList.add('active');
+      });
+    });
+  </script>
+
+</body>
+</html>
