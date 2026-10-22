@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SmartRadar · 智能车雷达监测平台</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' fill='%232563eb'/%3E%3Ccircle cx='12' cy='12' r='5' fill='none' stroke='white' stroke-width='2'/%3E%3Cline x1='12' y1='12' x2='19' y2='6' stroke='white' stroke-width='2'/%3E%3C/svg%3E">
+<style>
+/* ============================================================
+   SmartRadar 智能车雷达监测平台
+   全局样式表（Global CSS）  作者类名前缀：fzg-（冯子格）
+   ============================================================ */
+:root{
+  --fzg-primary:#2563eb;
+  --fzg-primary-soft:#3b82f6;
+  --fzg-cyan:#06b6d4;
+  --fzg-bg:#f1f6ff;
+  --fzg-surface:#ffffff;
+  --fzg-ink:#0f172a;
+  --fzg-ink-2:#475569;
+  --fzg-ink-3:#94a3b8;
+  --fzg-line:#e2e8f0;
+  --fzg-ok:#16a34a;
+  --fzg-warn:#d97706;
+  --fzg-radius:16px;
+  --fzg-shadow:0 6px 20px rgba(37,99,235,.10);
+  --fzg-tab-h:64px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:"PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,system-ui,sans-serif;
+  background:linear-gradient(160deg,#eaf2ff 0%,#f6faff 45%,#eef7ff 100%);
+  color:var(--fzg-ink);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+/* App 外壳：移动端优先，桌面居中加两侧氛围 */
+.fzg-app{
+  max-width:480px;margin:0 auto;min-height:100vh;
+  background:linear-gradient(180deg,#eaf2ff 0%,#f8fbff 220px,#ffffff 100%);
+  box-shadow:0 0 40px rgba(37,99,235,.08);
+  position:relative;padding-bottom:calc(var(--fzg-tab-h) + env(safe-area-inset-bottom));
+}
+/* ---------- 通用图标系统（iconfont / SVG sprite 等价方案） ---------- */
+.fzg-icon{
+  width:22px;height:22px;fill:none;stroke:currentColor;
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;
+}
+.fzg-icon--sm{width:16px;height:16px}
+.fzg-icon--lg{width:28px;height:28px}
+.fzg-icon--fill{fill:currentColor;stroke:none}
+
+/* ---------- 顶部栏 ---------- */
+.fzg-topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 20px 10px;
+}
+.fzg-brand{display:flex;align-items:center;gap:10px}
+.fzg-brand-dot{
+  width:34px;height:34px;border-radius:10px;
+  background:linear-gradient(135deg,var(--fzg-primary),var(--fzg-cyan));
+  display:flex;align-items:center;justify-content:center;color:#fff;
+  box-shadow:var(--fzg-shadow);
+}
+.fzg-brand-name{font-size:17px;font-weight:700;letter-spacing:.5px}
+.fzg-brand-sub{font-size:11px;color:var(--fzg-ink-3)}
+.fzg-topbar-badge{
+  display:flex;align-items:center;gap:6px;font-size:12px;color:var(--fzg-primary);
+  background:#e0edff;border-radius:999px;padding:6px 12px;font-weight:600;
+}
+.fzg-live-dot{width:7px;height:7px;border-radius:50%;background:var(--fzg-ok);animation:fzg-pulse 1.6s infinite}
+@keyframes fzg-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+
+/* ---------- 视图容器 ---------- */
+.fzg-view{padding:8px 20px 24px;animation:fzg-fade .3s ease}
+@keyframes fzg-fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.fzg-view-title{font-size:22px;font-weight:800;margin:6px 0 4px}
+.fzg-view-desc{font-size:13px;color:var(--fzg-ink-2);margin-bottom:16px;line-height:1.6}
+
+/* ---------- 首页 Hero ---------- */
+.fzg-hero{
+  border-radius:20px;padding:22px;color:#fff;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#1d4ed8 0%,#2563eb 55%,#06b6d4 100%);
+  box-shadow:0 12px 30px rgba(37,99,235,.35);
+}
+.fzg-hero h2{font-size:21px;line-height:1.4;margin-bottom:6px}
+.fzg-hero p{font-size:13px;opacity:.9;line-height:1.6}
+.fzg-hero-stats{display:flex;gap:14px;margin-top:18px}
+.fzg-hero-stat{background:rgba(255,255,255,.16);border-radius:12px;padding:10px 12px;flex:1;backdrop-filter:blur(4px)}
+.fzg-hero-stat b{display:block;font-size:19px}
+.fzg-hero-stat span{font-size:11px;opacity:.85}
+/* 雷达扫描动画装饰 */
+.fzg-radar{position:absolute;right:-30px;top:-30px;width:150px;height:150px;opacity:.5}
+.fzg-radar-sweep{transform-origin:center;animation:fzg-spin 3.5s linear infinite}
+@keyframes fzg-spin{to{transform:rotate(360deg)}}
+
+/* ---------- 功能入口卡片 ---------- */
+.fzg-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:18px}
+.fzg-entry{
+  background:var(--fzg-surface);border-radius:var(--fzg-radius);padding:16px;
+  border:1px solid var(--fzg-line);cursor:pointer;transition:.2s;
+}
+.fzg-entry:hover{transform:translateY(-2px);box-shadow:var(--fzg-shadow)}
+.fzg-entry-icon{
+  width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  background:#e0edff;color:var(--fzg-primary);margin-bottom:10px;
+}
+.fzg-entry b{font-size:14px;display:block}
+.fzg-entry span{font-size:12px;color:var(--fzg-ink-3)}
+
+/* ---------- 产品列表 ---------- */
+.fzg-list{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+.fzg-card{
+  background:var(--fzg-surface);border:1px solid var(--fzg-line);border-radius:var(--fzg-radius);
+  padding:14px;display:flex;gap:14px;align-items:center;cursor:pointer;transition:.2s;
+}
+.fzg-card:hover{box-shadow:var(--fzg-shadow);border-color:#bfdbfe}
+.fzg-card-thumb{
+  width:54px;height:54px;border-radius:14px;flex:none;
+  background:linear-gradient(135deg,#dbeafe,#cffafe);
+  display:flex;align-items:center;justify-content:center;color:var(--fzg-primary);
+}
+.fzg-card-body{flex:1;min-width:0}
+.fzg-card-body b{font-size:15px;display:block}
+.fzg-card-model{font-size:11px;color:var(--fzg-ink-3);margin:2px 0 6px}
+.fzg-card-summary{
+  font-size:12px;color:var(--fzg-ink-2);line-height:1.5;
+  overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+}
+.fzg-card-meta{display:flex;align-items:center;gap:6px;flex:none}
+.fzg-status{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px}
+.fzg-status--on{background:#dcfce7;color:var(--fzg-ok)}
+.fzg-status--standby{background:#fef3c7;color:var(--fzg-warn)}
+.fzg-arrow{color:var(--fzg-ink-3)}
+
+/* ---------- 详情页 ---------- */
+.fzg-detail-hero{
+  border-radius:18px;padding:22px;color:#fff;background:linear-gradient(135deg,#0f3aa8,#2563eb);
+  margin-bottom:16px;position:relative;overflow:hidden;
+}
+.fzg-detail-hero .fzg-icon{width:40px;height:40px;opacity:.9}
+.fzg-detail-hero h2{font-size:20px;margin-top:10px}
+.fzg-detail-hero p{font-size:12px;opacity:.85;margin-top:4px}
+.fzg-param-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0}
+.fzg-param{background:var(--fzg-surface);border:1px solid var(--fzg-line);border-radius:12px;padding:12px}
+.fzg-param span{font-size:11px;color:var(--fzg-ink-3);display:block}
+.fzg-param b{font-size:16px;color:var(--fzg-primary)}
+.fzg-section{background:var(--fzg-surface);border:1px solid var(--fzg-line);border-radius:14px;padding:16px;margin-bottom:12px}
+.fzg-section h3{font-size:14px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.fzg-section p{font-size:13px;color:var(--fzg-ink-2);line-height:1.8}
+.fzg-back{
+  display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--fzg-primary);
+  background:#e0edff;border:none;border-radius:999px;padding:8px 16px;cursor:pointer;font-weight:600;
+}
+
+/* ---------- 数据页（SVG 折线图） ---------- */
+.fzg-chart-card{background:var(--fzg-surface);border:1px solid var(--fzg-line);border-radius:14px;padding:16px;margin-bottom:12px}
+.fzg-chart-card h3{font-size:14px;margin-bottom:8px}
+.fzg-kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.fzg-kpi{background:#f0f7ff;border-radius:12px;padding:12px;text-align:center}
+.fzg-kpi b{font-size:18px;color:var(--fzg-primary);display:block}
+.fzg-kpi span{font-size:11px;color:var(--fzg-ink-3)}
+
+/* ---------- 我的 / 图标库 ---------- */
+.fzg-profile-head{display:flex;align-items:center;gap:14px;background:var(--fzg-surface);border:1px solid var(--fzg-line);border-radius:16px;padding:16px;margin-bottom:14px}
+.fzg-avatar{
+  width:56px;height:56px;border-radius:50%;flex:none;color:#fff;
+  background:linear-gradient(135deg,var(--fzg-primary),var(--fzg-cyan));
+  display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;
+}
+.fzg-list-row{display:flex;flex-direction:column}
+.fzg-row{
+  display:flex;align-items:center;gap:12px;background:var(--fzg-surface);
+  border:1px solid var(--fzg-line);border-radius:12px;padding:14px;margin-bottom:10px;
+}
+.fzg-row .fzg-row-icon{color:var(--fzg-primary)}
+.fzg-row b{font-size:14px;flex:1}
+.fzg-row span{font-size:12px;color:var(--fzg-ink-3)}
+/* 图标墙：报告中"iconfont 全部图标截图" */
+.fzg-icon-wall{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.fzg-icon-cell{
+  background:var(--fzg-surface);border:1px dashed #bfdbfe;border-radius:12px;
+  padding:12px 6px;text-align:center;color:var(--fzg-primary);
+}
+.fzg-icon-cell span{display:block;font-size:10px;color:var(--fzg-ink-3);margin-top:6px;font-family:monospace}
+
+/* ---------- 底部 Tab 导航（下导航） ---------- */
+.fzg-tabbar{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:480px;height:var(--fzg-tab-h);
+  background:rgba(255,255,255,.92);backdrop-filter:blur(12px);
+  border-top:1px solid var(--fzg-line);
+  display:flex;z-index:50;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.fzg-tab{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  border:none;background:none;cursor:pointer;color:var(--fzg-ink-3);font-size:10px;transition:.2s;
+}
+.fzg-tab--active{color:var(--fzg-primary);font-weight:700}
+
+/* ---------- 桌面 / 平板扩展 ---------- */
+@media (min-width:768px){
+  .fzg-app{max-width:720px}
+  .fzg-tabbar{max-width:720px}
+  .fzg-view{padding:12px 32px 32px}
+  .fzg-grid{grid-template-columns:repeat(4,1fr)}
+  .fzg-icon-wall{grid-template-columns:repeat(6,1fr)}
+  .fzg-kpi-row{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ SVG Sprite：fzg 图标库（等价于 iconfont 字体图标） ============ -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="fzg-icon-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9.5 21v-6h5v6"/></symbol>
+  <symbol id="fzg-icon-radar" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><path d="M12 12 18 6"/></symbol>
+  <symbol id="fzg-icon-chart" viewBox="0 0 24 24"><path d="M4 20V4"/><path d="M4 20h16"/><rect x="7" y="12" width="3" height="5" fill="currentColor" stroke="none"/><rect x="12" y="8" width="3" height="9" fill="currentColor" stroke="none"/><rect x="17" y="5" width="3" height="12" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="fzg-icon-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6.5 8-6.5s8 2.5 8 6.5"/></symbol>
+  <symbol id="fzg-icon-signal" viewBox="0 0 24 24"><path d="M5 19v-4"/><path d="M10 19v-7"/><path d="M15 19v-10"/><path d="M20 19V5"/></symbol>
+  <symbol id="fzg-icon-battery" viewBox="0 0 24 24"><rect x="2" y="8" width="17" height="8" rx="2"/><path d="M22 11v2"/><rect x="4" y="10" width="9" height="4" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="fzg-icon-location" viewBox="0 0 24 24"><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+  <symbol id="fzg-icon-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6a7 7 0 0 0 0 2.4l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6A7 7 0 0 0 19 12z"/></symbol>
+  <symbol id="fzg-icon-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></symbol>
+  <symbol id="fzg-icon-wifi" viewBox="0 0 24 24"><path d="M2 9a15 15 0 0 1 20 0"/><path d="M5.5 12.5a10 10 0 0 1 13 0"/><path d="M9 16a5 5 0 0 1 6 0"/><circle cx="12" cy="19" r="1" fill="currentColor"/></symbol>
+  <symbol id="fzg-icon-chip" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></symbol>
+  <symbol id="fzg-icon-speed" viewBox="0 0 24 24"><path d="M4 14a8 8 0 1 1 16 0"/><path d="M12 14l4-4"/><circle cx="12" cy="14" r="1.2" fill="currentColor"/></symbol>
+  <symbol id="fzg-icon-warning" viewBox="0 0 24 24"><path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4"/><circle cx="12" cy="17" r=".8" fill="currentColor"/></symbol>
+  <symbol id="fzg-icon-check" viewBox="0 0 24 24"><path d="m4 12.5 5 5L20 6.5"/></symbol>
+  <symbol id="fzg-icon-camera" viewBox="0 0 24 24"><path d="M3 8a2 2 0 0 1 2-2h2l2-2h6l2 2h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+  <symbol id="fzg-icon-antenna" viewBox="0 0 24 24"><circle cx="12" cy="20" r="1.5" fill="currentColor"/><path d="M12 18V9"/><path d="M8 11a6 6 0 0 1 8 0"/><path d="M5.5 8a10 10 0 0 1 13 0"/></symbol>
+</svg>
+
+<div class="fzg-app">
+
+  <!-- 顶部栏 -->
+  <header class="fzg-topbar">
+    <div class="fzg-brand">
+      <div class="fzg-brand-dot"><svg class="fzg-icon fzg-icon--sm"><use href="#fzg-icon-radar" xlink:href="#fzg-icon-radar"/></svg></div>
+      <div>
+        <div class="fzg-brand-name">SmartRadar</div>
+        <div class="fzg-brand-sub">智能车雷达监测平台</div>
+      </div>
+    </div>
+    <div class="fzg-topbar-badge"><span class="fzg-live-dot"></span>在线</div>
+  </header>
+
+  <!-- 视图挂载点 -->
+  <main id="fzg-view-root"></main>
+
+  <!-- ============ 底部 Tab 导航（下导航） ============ -->
+  <nav class="fzg-tabbar">
+    <button class="fzg-tab" data-route="#/home">
+      <svg class="fzg-icon"><use href="#fzg-icon-home" xlink:href="#fzg-icon-home"/></svg><span>首页</span>
+    </button>
+    <button class="fzg-tab" data-route="#/products">
+      <svg class="fzg-icon"><use href="#fzg-icon-radar" xlink:href="#fzg-icon-radar"/></svg><span>雷达产品</span>
+    </button>
+    <button class="fzg-tab" data-route="#/data">
+      <svg class="fzg-icon"><use href="#fzg-icon-chart" xlink:href="#fzg-icon-chart"/></svg><span>数据中心</span>
+    </button>
+    <button class="fzg-tab" data-route="#/profile">
+      <svg class="fzg-icon"><use href="#fzg-icon-user" xlink:href="#fzg-icon-user"/></svg><span>我的</span>
+    </button>
+  </nav>
+</div>
+
+<script>
+/* ============================================================
+   数据（固化进 JS）  作者：冯子格（fzg）
+   ============================================================ */
+var FZG_PRODUCTS = [
+  { id:0, name:"77GHz 毫米波前向雷达", model:"FZG-MR77-F", range:"240 m", accuracy:"±0.1 m",
+    status:"运行中", statusCls:"fzg-status--on",
+    summary:"车前向长距探测，支持自适应巡航与自动紧急制动，最远探测 240 米。",
+    detail:"该雷达安装于车辆前保险杠中部，采用 77GHz 毫米波频段，可在暴雨、大雾、强光等恶劣天气下稳定工作，输出目标距离、速度与角度三类信息，为 ACC 自适应巡航与 AEB 自动紧急制动提供感知依据。",
+    params:[{k:"工作频段",v:"76–81 GHz"},{k:"距离分辨率",v:"0.1 m"},{k:"最大量程",v:"240 m"},{k:"探测车道",v:"前向 6 车道"}] },
+  { id:1, name:"24GHz 盲点监测雷达", model:"FZG-MR24-BS", range:"40 m", accuracy:"±0.3 m",
+    status:"运行中", statusCls:"fzg-status--on",
+    summary:"后向盲区监测并线辅助，覆盖车辆两侧后方 40 米范围，预警盲区来车。",
+    detail:"两颗 24GHz 短距雷达分置于后保险杠两侧，实时监测盲区与后方横向来车，当相邻车道存在快速接近车辆时通过外后视镜灯带与座椅震动提醒驾驶员，降低并线事故风险。",
+    params:[{k:"工作频段",v:"24.05–24.25 GHz"},{k:"覆盖范围",v:"后向 40 m"},{k:"预警方式",v:"灯带+震动"},{k:"安装位置",v:"后保两侧"}] },
+  { id:2, name:"4D 成像雷达", model:"FZG-IM4D-PRO", range:"300 m", accuracy:"±0.05 m",
+    status:"待机", statusCls:"fzg-status--standby",
+    summary:"高角分辨率点云成像雷达，输出 4D 点云，可识别行人、骑行者与障碍物轮廓。",
+    detail:"4D 成像雷达在距离、速度、水平角基础上增加俯仰角维度，单次扫描可生成数千个点的点云，配合深度学习算法可区分行人、两轮车与静止障碍物，为高阶自动驾驶提供冗余感知。",
+    params:[{k:"点云规模",v:"≥3000 点/帧"},{k:"角分辨率",v:"1°×1°"},{k:"最大量程",v:"300 m"},{k:"帧频",v:"20 Hz"}] },
+  { id:3, name:"超声波泊车雷达", model:"FZG-USP-08", range:"2.5 m", accuracy:"±0.02 m",
+    status:"运行中", statusCls:"fzg-status--on",
+    summary:"8 探头超声波全景泊车辅助，近距离高精度测距，支持自动泊车入位。",
+    detail:"全车布置 8 颗超声波探头，覆盖前后保险杠，低速泊车时以高频超声波测量障碍物距离，蜂鸣节奏随距离加密，配合全景影像实现垂直泊车位自动泊入。",
+    params:[{k:"探头数量",v:"8 颗"},{k:"近距量程",v:"0.2–2.5 m"},{k:"测距精度",v:"±0.02 m"},{k:"蜂鸣预警",v:"距离分级"}] },
+  { id:4, name:"路侧融合感知单元", model:"FZG-RSU-66", range:"150 m", accuracy:"±0.2 m",
+    status:"待机", statusCls:"fzg-status--standby",
+    summary:"路侧毫米波+相机融合感知单元，V2X 广播路口交通参与者实时位置。",
+    detail:"部署于交叉路口信号灯杆上，融合毫米波雷达与视觉相机，检测路口内车辆、非机动车与行人位置与轨迹，通过 V2X 广播给周边车辆，弥补车载感知盲区，提升路口通行安全。",
+    params:[{k:"融合方式",v:"雷达+相机"},{k:"路口覆盖",v:"150 m 半径"},{k:"通信方式",v:"PC5 / C-V2X"},{k:"供电",v:"太阳能+市电"}] }
+];
+
+/* ============================================================
+   路由工具：解析 hash，如 #/product?id=2
+   ============================================================ */
+function fzg_parseHash(){
+  var h = location.hash.replace(/^#\//,"") || "home";
+  var parts = h.split("?");
+  var path = parts[0] || "home";
+  var query = {};
+  if(parts[1]){
+    parts[1].split("&").forEach(function(kv){
+      var p = kv.split("=");
+      query[p[0]] = decodeURIComponent(p[1]||"");
+    });
+  }
+  return { path:path, query:query };
+}
+function fzg_nav(route){ location.hash = route; }
+
+/* ============================================================
+   视图渲染
+   ============================================================ */
+var root = document.getElementById("fzg-view-root");
+
+function fzg_icon(name, cls){
+  return '<svg class="fzg-icon '+(cls||'')+'"><use href="#fzg-icon-'+name+'"/></svg>';
+}
+
+/* ----- 首页 ----- */
+function fzgViewHome(){
+  return ''+
+  '<div class="fzg-view">'+
+    '<div class="fzg-hero">'+
+      '<svg class="fzg-radar" viewBox="0 0 120 120" aria-hidden="true">'+
+        '<circle cx="60" cy="60" r="55" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>'+
+        '<circle cx="60" cy="60" r="38" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>'+
+        '<circle cx="60" cy="60" r="20" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>'+
+        '<g class="fzg-radar-sweep"><path d="M60 60 L60 5 A55 55 0 0 1 100 25 Z" fill="rgba(255,255,255,.35)"/></g>'+
+      '</svg>'+
+      '<h2>四路雷达在线监测<br>盲区一目了然</h2>'+
+      '<p>SmartRadar 将车端毫米波雷达、超声波雷达与路侧感知单元统一接入，实时回传目标距离、速度与状态。</p>'+
+      '<div class="fzg-hero-stats">'+
+        '<div class="fzg-hero-stat"><b>5</b><span>在线雷达</span></div>'+
+        '<div class="fzg-hero-stat"><b>32</b><span>跟踪目标</span></div>'+
+        '<div class="fzg-hero-stat"><b>240m</b><span>最远距离</span></div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="fzg-grid">'+
+      '<div class="fzg-entry" onclick="fzg_nav(\'#/products\')"><div class="fzg-entry-icon">'+fzg_icon("radar")+'</div><b>雷达产品</b><span>全部 5 台设备</span></div>'+
+      '<div class="fzg-entry" onclick="fzg_nav(\'#/data\')"><div class="fzg-entry-icon">'+fzg_icon("chart")+'</div><b>数据中心</b><span>实时曲线与 KPI</span></div>'+
+      '<div class="fzg-entry" onclick="fzg_nav(\'#/home\')"><div class="fzg-entry-icon">'+fzg_icon("warning")+'</div><b>报警事件</b><span>今日 2 条预警</span></div>'+
+      '<div class="fzg-entry" onclick="fzg_nav(\'#/profile\')"><div class="fzg-entry-icon">'+fzg_icon("settings")+'</div><b>系统设置</b><span>账号与图标库</span></div>'+
+    '</div>'+
+  '</div>';
+}
+
+/* ----- 产品列表（二级页） ----- */
+function fzgViewProducts(){
+  var cards = FZG_PRODUCTS.map(function(p){
+    return ''+
+    '<div class="fzg-card" onclick="fzg_nav(\'#/product?id='+p.id+'\')">'+
+      '<div class="fzg-card-thumb">'+fzg_icon("radar","fzg-icon--lg")+'</div>'+
+      '<div class="fzg-card-body">'+
+        '<b>'+p.name+'</b>'+
+        '<div class="fzg-card-model">型号 '+p.model+' · 最大 '+p.range+'</div>'+
+        '<div class="fzg-card-summary">'+p.summary+'</div>'+
+      '</div>'+
+      '<div class="fzg-card-meta">'+
+        '<span class="fzg-status '+p.statusCls+'">'+p.status+'</span>'+
+        fzg_icon("arrow-right","fzg-arrow fzg-icon--sm")+
+      '</div>'+
+    '</div>';
+  }).join("");
+  return ''+
+  '<div class="fzg-view">'+
+    '<div class="fzg-view-title">雷达产品</div>'+
+    '<div class="fzg-view-desc">点击任意设备卡片，查看完整参数与运行详情（三级页路由传参演示）。</div>'+
+    '<div class="fzg-list">'+cards+'</div>'+
+  '</div>';
+}
+
+/* ----- 产品详情（三级页，从路由 query 取 id） ----- */
+function fzgViewProduct(query){
+  var id = parseInt(query.id, 10);
+  if(isNaN(id) || !FZG_PRODUCTS[id]){ id = 0; }
+  var p = FZG_PRODUCTS[id];
+  var params = p.params.map(function(pa){
+    return '<div class="fzg-param"><span>'+pa.k+'</span><b>'+pa.v+'</b></div>';
+  }).join("");
+  return ''+
+  '<div class="fzg-view">'+
+    '<button class="fzg-back" onclick="fzg_nav(\'#/products\')">'+fzg_icon("arrow-right","fzg-icon--sm")+' 返回列表</button>'+
+    '<div style="height:12px"></div>'+
+    '<div class="fzg-detail-hero">'+
+      fzg_icon("radar")+
+      '<h2>'+p.name+'</h2>'+
+      '<p>路由参数 id = '+id+' · 型号 '+p.model+'</p>'+
+    '</div>'+
+    '<div class="fzg-param-grid">'+params+'</div>'+
+    '<div class="fzg-section">'+
+      '<h3>'+fzg_icon("signal","fzg-icon--sm")+' 设备说明</h3>'+
+      '<p>'+p.detail+'</p>'+
+    '</div>'+
+    '<div class="fzg-section">'+
+      '<h3>'+fzg_icon("check","fzg-icon--sm")+' 当前状态</h3>'+
+      '<p>探测距离 <b style="color:var(--fzg-primary)">'+p.range+'</b>，测距精度 <b style="color:var(--fzg-primary)">'+p.accuracy+'</b>，'+
+      '链路时延 12ms，心跳正常，固件版本 v3.2.1。</p>'+
+    '</div>'+
+  '</div>';
+}
+
+/* ----- 数据中心 ----- */
+function fzgViewData(){
+  return ''+
+  '<div class="fzg-view">'+
+    '<div class="fzg-view-title">数据中心</div>'+
+    '<div class="fzg-view-desc">最近 12 秒目标探测距离变化曲线（SVG 手绘折线图）。</div>'+
+    '<div class="fzg-kpi-row">'+
+      '<div class="fzg-kpi"><b>32</b><span>跟踪目标</span></div>'+
+      '<div class="fzg-kpi"><b>12ms</b><span>链路时延</span></div>'+
+      '<div class="fzg-kpi"><b>99.2%</b><span>在线率</span></div>'+
+    '</div>'+
+    '<div class="fzg-chart-card">'+
+      '<h3>前向雷达 · 目标距离 (m)</h3>'+
+      '<svg viewBox="0 0 320 140" style="width:100%;height:auto" preserveAspectRatio="none">'+
+        '<line x1="20" y1="10" x2="20" y2="120" stroke="#e2e8f0"/>'+
+        '<line x1="20" y1="120" x2="310" y2="120" stroke="#e2e8f0"/>'+
+        '<polyline points="20,95 45,80 70,88 95,60 120,66 145,45 170,52 195,35 220,48 245,30 270,40 300,22" '+
+          'fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'+
+        '<polygon points="20,95 45,80 70,88 95,60 120,66 145,45 170,52 195,35 220,48 245,30 270,40 300,22 300,120 20,120" '+
+          'fill="url(#fzg-grad)" opacity=".15"/>'+
+        '<defs><linearGradient id="fzg-grad" x1="0" y1="0" x2="0" y2="1">'+
+          '<stop offset="0" stop-color="#2563eb"/><stop offset="1" stop-color="#06b6d4"/>'+
+        '</linearGradient></defs>'+
+      '</svg>'+
+    '</div>'+
+    '<div class="fzg-chart-card">'+
+      '<h3>'+fzg_icon("battery","fzg-icon--sm")+' 链路状态</h3>'+
+      '<p style="font-size:13px;color:var(--fzg-ink-2);line-height:1.9">'+
+        fzg_icon("wifi","fzg-icon--sm")+' V2X 链路正常　'+
+        fzg_icon("chip","fzg-icon--sm")+' MCU 温度 41°C　'+
+        fzg_icon("antenna","fzg-icon--sm")+' 天线增益 +8dBi</p>'+
+    '</div>'+
+  '</div>';
+}
+
+/* ----- 我的（含 fzg 图标墙） ----- */
+var FZG_ICON_LIST = ["home","radar","chart","user","signal","battery","location","settings","arrow-right","wifi","chip","speed","warning","check","camera","antenna"];
+function fzgViewProfile(){
+  var wall = FZG_ICON_LIST.map(function(n){
+    return '<div class="fzg-icon-cell">'+fzg_icon(n)+'<span>fzg-icon-'+n+'</span></div>';
+  }).join("");
+  return ''+
+  '<div class="fzg-view">'+
+    '<div class="fzg-view-title">我的</div>'+
+    '<div class="fzg-profile-head">'+
+      '<div class="fzg-avatar">冯</div>'+
+      '<div>'+
+        '<b style="font-size:16px">冯子格</b>'+
+        '<div style="font-size:12px;color:var(--fzg-ink-3);margin-top:4px">智能车雷达项目组 · 前端开发</div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="fzg-list-row">'+
+      '<div class="fzg-row"><span class="fzg-row-icon">'+fzg_icon("location")+'</span><b>车辆位置</b><span>沈阳·创新路</span></div>'+
+      '<div class="fzg-row"><span class="fzg-row-icon">'+fzg_icon("camera")+'</span><b>全景影像</b><span>已接入</span></div>'+
+      '<div class="fzg-row"><span class="fzg-row-icon">'+fzg_icon("speed")+'</span><b>巡航速度</b><span>62 km/h</span></div>'+
+    '</div>'+
+    '<div class="fzg-view-title" style="font-size:17px;margin-top:18px">fzg 图标库（SVG sprite）</div>'+
+    '<div class="fzg-view-desc">共 '+FZG_ICON_LIST.length+' 枚图标，全部以 <b>&lt;use href="#fzg-icon-*"/&gt;</b> 方式引用，等价于 iconfont 字体图标。</div>'+
+    '<div class="fzg-icon-wall">'+wall+'</div>'+
+  '</div>';
+}
+
+/* ============================================================
+   路由分发
+   ============================================================ */
+function fzg_router(){
+  var r = fzg_parseHash();
+  var html = "";
+  if(r.path === "products") html = fzgViewProducts();
+  else if(r.path === "product") html = fzgViewProduct(r.query);
+  else if(r.path === "data") html = fzgViewData();
+  else if(r.path === "profile") html = fzgViewProfile();
+  else html = fzgViewHome();
+  root.innerHTML = html;
+  /* 高亮当前 tab */
+  var tabPath = (r.path === "product") ? "products" : r.path;
+  document.querySelectorAll(".fzg-tab").forEach(function(btn){
+    btn.classList.toggle("fzg-tab--active", btn.getAttribute("data-route") === "#/"+tabPath);
+  });
+  window.scrollTo(0,0);
+}
+/* 底部 Tab 点击跳转（绑定一次，tabbar 不在 root 内不会被重渲染覆盖） */
+document.querySelectorAll(".fzg-tab").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    fzg_nav(btn.getAttribute("data-route"));
+  });
+});
+window.addEventListener("hashchange", fzg_router);
+fzg_router();
+</script>
+</body>
+</html>

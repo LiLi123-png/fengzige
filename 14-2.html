@@ -1,0 +1,239 @@
+<!--
+  姓名：冯子格
+  日期：2026-10-22
+  功能：演示 JavaScript 六种基础数据类型（string、number、boolean、undefined、null、symbol）
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>JS 六种基础数据类型 - 冯子格</title>
+  <style>
+    /* 变量、类名统一 fzg_ 前缀 */
+    :root {
+      --fzg_primary: #4a90e2;
+      --fzg_bg: #f5f6f8;
+      --fzg_card: #ffffff;
+      --fzg_text: #333;
+      --fzg_muted: #888;
+      --fzg_border: #eee;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      background: var(--fzg_bg);
+      color: var(--fzg_text);
+      padding: 20px;
+      line-height: 1.8;
+    }
+    .fzg_container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .fzg_title {
+      font-size: 20px;
+      color: var(--fzg_primary);
+      margin-bottom: 16px;
+    }
+    .fzg_card {
+      background: var(--fzg_card);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+    .fzg_card h3 {
+      color: var(--fzg_primary);
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    .fzg_row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      border-bottom: 1px dashed var(--fzg_border);
+      font-size: 14px;
+    }
+    .fzg_row:last-child { border-bottom: none; }
+    .fzg_key { color: var(--fzg_muted); }
+    .fzg_val {
+      font-family: Consolas, "Courier New", monospace;
+      color: #e74c3c;
+    }
+    .fzg_code {
+      background: #2d2d2d;
+      color: #ccc;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      overflow-x: auto;
+    }
+    .fzg_type-tag {
+      display: inline-block;
+      background: var(--fzg_primary);
+      color: #fff;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      margin-right: 6px;
+    }
+    #fzg_result {
+      background: #f0f7ff;
+      border: 1px solid var(--fzg_primary);
+      border-radius: 6px;
+      padding: 14px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+      color: #333;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="fzg_container">
+
+    <h1 class="fzg_title">JavaScript 六种基础数据类型演示</h1>
+
+    <!-- 类型说明卡片 -->
+    <div class="fzg_card">
+      <h3>六种基础数据类型（原始类型 / Primitive Types）</h3>
+      <div class="fzg_row"><span class="fzg_key"><span class="fzg_type-tag">string</span>字符串</span><span class="fzg_val">"你好"</span></div>
+      <div class="fzg_row"><span class="fzg_key"><span class="fzg_type-tag">number</span>数字</span><span class="fzg_val">42 / 3.14 / Infinity / NaN</span></div>
+      <div class="fzg_row"><span class="fzg_key"><span class="fzg_type-tag">boolean</span>布尔</span><span class="fzg_val">true / false</span></div>
+      <div class="fzg_row"><span class="fzg_key"><span class="fzg_type-tag">undefined</span>未定义</span><span class="fzg_val">未赋值的变量</span></div>
+      <div class="fzg_row"><span class="fzg_key"><span class="fzg_type-tag">null</span>空值</span><span class="fzg_val">主动赋值的空引用</span></div>
+      <div class="fzg_row"><span class="fzg_key"><span class="fzg_type-tag">symbol</span>唯一标识</span><span class="fzg_val">Symbol("key")</span></div>
+      <p style="font-size:12px;color:var(--fzg_muted);margin-top:10px;">
+        另外还有 bigint（大整数，ES2020）和 object（引用类型），不在"六种"范围内。
+      </p>
+    </div>
+
+    <!-- 代码示例卡片 -->
+    <div class="fzg_card">
+      <h3>代码示例</h3>
+      <pre class="fzg_code">// 1. string  —— 字符串
+var fzg_name = "冯子格";
+var fzg_greet = 'Hello' + " World";
+
+// 2. number  —— 数字（整数、小数、特殊值）
+var fzg_age = 25;
+var fzg_pi = 3.14159;
+var fzg_inf = Infinity;
+var fzg_nan = NaN;
+
+// 3. boolean —— 布尔（只有 true / false）
+var fzg_isOk = true;
+var fzg_notOk = false;
+
+// 4. undefined —— 未定义（变量声明但未赋值）
+var fzg_undefinedVal;
+
+// 5. null —— 空值（主动赋值为 null）
+var fzg_nullVal = null;
+
+// 6. symbol —— 唯一标识符（ES6 新增）
+var fzg_sym = Symbol("fzg_key");</pre>
+    </div>
+
+    <!-- 运行结果卡片 -->
+    <div class="fzg_card">
+      <h3>运行结果（控制台 + 下方 div 同时输出）</h3>
+      <div id="fzg_result"></div>
+    </div>
+
+  </div>
+
+  <script>
+    // ===== 六种基础数据类型演示 =====
+
+    // 1. string —— 字符串
+    var fzg_name = "冯子格";
+    var fzg_greet = 'Hello' + " World";
+    var fzg_template = "姓名: " + fzg_name;
+
+    // 2. number —— 数字
+    var fzg_age = 25;
+    var fzg_pi = 3.14159;
+    var fzg_inf = Infinity;
+    var fzg_nan = NaN;
+
+    // 3. boolean —— 布尔
+    var fzg_isOk = true;
+    var fzg_notOk = false;
+
+    // 4. undefined —— 未定义
+    var fzg_undefinedVal;
+
+    // 5. null —— 空值
+    var fzg_nullVal = null;
+
+    // 6. symbol —— 唯一标识
+    var fzg_sym = Symbol("fzg_key");
+    var fzg_sym2 = Symbol("fzg_key");
+
+    // ===== 输出函数 =====
+    var fzg_lines = [];
+    function fzg_log(msg) {
+      fzg_lines.push(msg);
+      console.log(msg);
+    }
+
+    fzg_log("===== JavaScript 六种基础数据类型 =====");
+    fzg_log("");
+
+    // --- string ---
+    fzg_log("1. string（字符串）");
+    fzg_log("   变量 fzg_name = " + JSON.stringify(fzg_name));
+    fzg_log("   typeof fzg_name = " + typeof fzg_name);
+    fzg_log("   拼接: " + fzg_greet);
+    fzg_log("");
+
+    // --- number ---
+    fzg_log("2. number（数字）");
+    fzg_log("   fzg_age = " + fzg_age + "  typeof = " + typeof fzg_age);
+    fzg_log("   fzg_pi  = " + fzg_pi + "  typeof = " + typeof fzg_pi);
+    fzg_log("   fzg_inf = " + fzg_inf + "  typeof = " + typeof fzg_inf);
+    fzg_log("   fzg_nan = " + fzg_nan + "  typeof = " + typeof fzg_nan);
+    fzg_log("   NaN 是 number 类型但不等于任何值（包括它自己）");
+    fzg_log("   NaN === NaN -> " + (fzg_nan === fzg_nan));
+    fzg_log("");
+
+    // --- boolean ---
+    fzg_log("3. boolean（布尔）");
+    fzg_log("   fzg_isOk   = " + fzg_isOk + "   typeof = " + typeof fzg_isOk);
+    fzg_log("   fzg_notOk  = " + fzg_notOk + "  typeof = " + typeof fzg_notOk);
+    fzg_log("   比较: 1 > 0 = " + (1 > 0) + "  typeof = " + typeof (1 > 0));
+    fzg_log("");
+
+    // --- undefined ---
+    fzg_log("4. undefined（未定义）");
+    fzg_log("   fzg_undefinedVal = " + fzg_undefinedVal);
+    fzg_log("   typeof fzg_undefinedVal = " + typeof fzg_undefinedVal);
+    fzg_log("   未声明的变量 typeof 也是 undefined");
+    fzg_log("");
+
+    // --- null ---
+    fzg_log("5. null（空值）");
+    fzg_log("   fzg_nullVal = " + fzg_nullVal);
+    fzg_log("   typeof fzg_nullVal = " + typeof fzg_nullVal + "  ← 历史遗留 bug");
+    fzg_log("   null === undefined -> " + (null === undefined) + "（严格相等为 false）");
+    fzg_log("   null == undefined  -> " + (null == undefined) + "（宽松相等为 true）");
+    fzg_log("");
+
+    // --- symbol ---
+    fzg_log("6. symbol（唯一标识）");
+    fzg_log("   fzg_sym  = " + fzg_sym.toString());
+    fzg_log("   typeof fzg_sym = " + typeof fzg_sym);
+    fzg_log("   fzg_sym  === fzg_sym2 -> " + (fzg_sym === fzg_sym2) + "（值相同但引用不同，永不相等）");
+    fzg_log("   常用于对象私有属性键，避免命名冲突");
+    fzg_log("");
+
+    // 写回到页面
+    document.getElementById("fzg_result").textContent = fzg_lines.join("\n");
+  </script>
+</body>
+</html>
