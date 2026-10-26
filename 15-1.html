@@ -1,0 +1,165 @@
+<!--
+  姓名：冯子格
+  日期：2026-10-26
+  功能：数7游戏演示——100个盒子，满足规则的（7的倍数、含7的数）显示特殊盒子，不满足的显示数字
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>数7游戏 - 冯子格</title>
+  <style>
+    /* 变量、类名统一 fzg_ 前缀 */
+    :root {
+      --fzg_primary: #4a90e2;
+      --fzg_bg: #f5f6f8;
+      --fzg_card: #ffffff;
+      --fzg_text: #333;
+      --fzg_muted: #888;
+      --fzg_hit: #e74c3c;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      background: var(--fzg_bg);
+      color: var(--fzg_text);
+      padding: 20px;
+      line-height: 1.8;
+    }
+    .fzg_container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .fzg_title {
+      font-size: 20px;
+      color: var(--fzg_primary);
+      margin-bottom: 6px;
+    }
+    .fzg_author {
+      font-size: 14px;
+      color: var(--fzg_muted);
+      margin-bottom: 14px;
+    }
+    .fzg_card {
+      background: var(--fzg_card);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+    .fzg_card h3 {
+      color: var(--fzg_primary);
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    /* 100 个盒子：网格布局，自适应宽度 */
+    .fzg_grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+      gap: 8px;
+    }
+    /* 普通盒子：显示数字 */
+    .fzg_box {
+      height: 56px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: #fafafa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-family: Consolas, "Courier New", monospace;
+      color: var(--fzg_text);
+    }
+    /* 满足规则的盒子：特殊高亮，显示"过" */
+    .fzg_box.fzg_hit {
+      background: var(--fzg_hit);
+      border-color: var(--fzg_hit);
+      color: #fff;
+      font-weight: bold;
+      font-size: 18px;
+      box-shadow: 0 2px 6px rgba(231, 76, 60, 0.4);
+    }
+    .fzg_summary {
+      font-size: 14px;
+      color: var(--fzg_muted);
+      margin-top: 12px;
+    }
+    .fzg_summary b { color: var(--fzg_hit); }
+  </style>
+</head>
+<body>
+  <div class="fzg_container">
+
+    <h1 class="fzg_title">数7游戏 —— 100 个盒子</h1>
+    <p class="fzg_author">制作：冯子格</p>
+
+    <!-- 规则说明 -->
+    <div class="fzg_card">
+      <h3>规则说明</h3>
+      <p style="font-size:14px;">
+        从 1 数到 100：凡是 <b style="color:var(--fzg_hit)">7 的倍数</b>、
+        <b style="color:var(--fzg_hit)">末尾是 7 的数</b>、
+        <b style="color:var(--fzg_hit)">十位是 7 的数</b>（即与 7 有关的数），
+        就"过"——输出一个红色盒子；其他数字正常显示。
+      </p>
+    </div>
+
+    <!-- 100 个盒子 -->
+    <div class="fzg_card">
+      <h3>1 ~ 100</h3>
+      <div id="fzg_grid" class="fzg_grid"></div>
+      <p id="fzg_summary" class="fzg_summary"></p>
+    </div>
+
+  </div>
+
+  <script>
+    // ===== 数7游戏：判断与渲染 =====
+    var fzg_total = 100;          // 盒子总数
+    var fzg_hitCount = 0;         // 满足规则的个数
+
+    // 判断数字 n 是否满足"数7"规则
+    function fzg_isHit(n) {
+      // 1. 7 的倍数
+      if (n % 7 === 0) return true;
+      // 2. 末尾（个位）是 7
+      if (n % 10 === 7) return true;
+      // 3. 十位是 7（如 70~79）
+      if (Math.floor(n / 10) % 10 === 7) return true;
+      return false;
+    }
+
+    // 生成 100 个盒子
+    var fzg_gridEl = document.getElementById("fzg_grid");
+    for (var fzg_i = 1; fzg_i <= fzg_total; fzg_i++) {
+      var fzg_box = document.createElement("div");
+      if (fzg_isHit(fzg_i)) {
+        // 满足规则：输出盒子（高亮"过"）
+        fzg_box.className = "fzg_box fzg_hit";
+        fzg_box.textContent = "过";
+        fzg_hitCount++;
+      } else {
+        // 不满足规则：输出数字
+        fzg_box.className = "fzg_box";
+        fzg_box.textContent = fzg_i;
+      }
+      fzg_gridEl.appendChild(fzg_box);
+    }
+
+    // 统计信息
+    document.getElementById("fzg_summary").innerHTML =
+      "共 " + fzg_total + " 个盒子，其中需要\"过\"的有 <b>" + fzg_hitCount +
+      "</b> 个，正常报数的有 " + (fzg_total - fzg_hitCount) + " 个。";
+
+    // 控制台同步输出满足规则的数字列表
+    var fzg_hits = [];
+    for (var fzg_j = 1; fzg_j <= fzg_total; fzg_j++) {
+      if (fzg_isHit(fzg_j)) fzg_hits.push(fzg_j);
+    }
+    console.log("冯子格的数7游戏 —— 满足规则的数字：", fzg_hits.join(", "));
+  </script>
+</body>
+</html>
