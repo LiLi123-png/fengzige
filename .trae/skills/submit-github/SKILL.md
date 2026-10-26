@@ -9,9 +9,11 @@ description: 提交当前项目到GitHub远程仓库并push。当用户要求提
 
 ## 目标仓库
 
-- 远程仓库地址（SSH，公钥已配置）：`git@github.com:LiLi123-png/fengzige.git`
+- 远程仓库地址（SSH）：`git@github.com:LiLi123-png/fengzige.git`
+- **实际可用的远程 URL**（本机 22 端口被封锁，走 443 通道）：`ssh://git@ssh.github.com:443/LiLi123-png/fengzige.git`
 - 认证方式：SSH 公钥认证，无需令牌
 - 远程名称使用 `github`，**不要占用 `origin`**（`origin` 已被 Gitee 仓库使用）
+- 仓库已配置 `core.sshCommand = C:/Windows/System32/OpenSSH/ssh.exe -o StrictHostKeyChecking=accept-new`（git 自带 ssh 的 HOME 解析读不到用户 ssh 配置，必须固定用系统 ssh），**不要删除该配置**
 
 ## 执行步骤
 
