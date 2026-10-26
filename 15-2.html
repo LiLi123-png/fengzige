@@ -1,0 +1,268 @@
+<!--
+  姓名：冯子格
+  日期：2026-10-26
+  功能：演示 JavaScript 程序结构（顺序、分支、循环），重点演示 for、while、do...while、for...in、for...of 五种循环及 break/continue
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>JS 程序结构与循环 - 冯子格</title>
+  <style>
+    /* 变量、类名统一 fzg_ 前缀 */
+    :root {
+      --fzg_primary: #4a90e2;
+      --fzg_bg: #f5f6f8;
+      --fzg_card: #ffffff;
+      --fzg_text: #333;
+      --fzg_muted: #888;
+      --fzg_border: #eee;
+      --fzg_accent: #e74c3c;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      background: var(--fzg_bg);
+      color: var(--fzg_text);
+      padding: 20px;
+      line-height: 1.8;
+    }
+    .fzg_container { max-width: 900px; margin: 0 auto; }
+    .fzg_title { font-size: 20px; color: var(--fzg_primary); margin-bottom: 6px; }
+    .fzg_author { font-size: 14px; color: var(--fzg_muted); margin-bottom: 14px; }
+    .fzg_card {
+      background: var(--fzg_card);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+    .fzg_card h3 { color: var(--fzg_primary); margin-bottom: 10px; font-size: 16px; }
+    .fzg_tag {
+      display: inline-block;
+      background: var(--fzg_primary);
+      color: #fff;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      margin-right: 6px;
+    }
+    .fzg_code {
+      background: #2d2d2d;
+      color: #ccc;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      overflow-x: auto;
+      font-family: Consolas, "Courier New", monospace;
+      white-space: pre;
+      margin-bottom: 10px;
+    }
+    .fzg_out {
+      background: #f0f7ff;
+      border: 1px solid var(--fzg_primary);
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    /* 九九乘法表 */
+    .fzg_table-row { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 4px; }
+    .fzg_table-cell {
+      background: #eaf3fd;
+      border: 1px solid #cfe4f9;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 12px;
+      color: #2c6cb0;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="fzg_container">
+
+    <h1 class="fzg_title">JavaScript 程序结构与循环</h1>
+    <p class="fzg_author">制作：冯子格</p>
+
+    <!-- 一、程序结构总览 -->
+    <div class="fzg_card">
+      <h3>一、三种基本程序结构</h3>
+      <div style="font-size:14px;">
+        <p><span class="fzg_tag">顺序</span>代码自上而下逐行执行，是最基本的结构。</p>
+        <p><span class="fzg_tag">分支</span>if / else if / else、switch —— 按条件选择执行路径。</p>
+        <p><span class="fzg_tag">循环</span>for、while、do...while、for...in、for...of —— 重复执行一段代码。</p>
+      </div>
+      <pre class="fzg_code">// 顺序结构
+var fzg_a = 1;
+var fzg_b = 2;
+var fzg_sum = fzg_a + fzg_b;   // 3
+
+// 分支结构
+if (fzg_sum > 2) {
+  // 条件成立走这里
+} else {
+  // 条件不成立走这里
+}</pre>
+    </div>
+
+    <!-- 二、for 循环 -->
+    <div class="fzg_card">
+      <h3>二、for 循环（已知次数首选）</h3>
+      <pre class="fzg_code">// for(初始化; 条件; 更新) { 循环体 }
+var fzg_total = 0;
+for (var fzg_i = 1; fzg_i <= 10; fzg_i++) {
+  fzg_total += fzg_i;      // 累加 1~10
+}</pre>
+      <div id="fzg_out_for" class="fzg_out"></div>
+    </div>
+
+    <!-- 三、while 与 do...while -->
+    <div class="fzg_card">
+      <h3>三、while 与 do...while 循环</h3>
+      <pre class="fzg_code">// while：先判断后执行，条件不成立一次都不执行
+var fzg_n = 1;
+while (fzg_n <= 5) { fzg_n *= 2; }   // 1→2→4→8
+
+// do...while：先执行后判断，循环体至少执行一次
+var fzg_m = 100;
+do {
+  fzg_m++;          // 即使条件不成立也会先执行一次
+} while (fzg_m < 100);</pre>
+      <div id="fzg_out_while" class="fzg_out"></div>
+    </div>
+
+    <!-- 四、for...in 与 for...of -->
+    <div class="fzg_card">
+      <h3>四、for...in 与 for...of</h3>
+      <pre class="fzg_code">// for...in：遍历对象的键（属性名）
+var fzg_stu = { fzg_name: "冯子格", fzg_age: 20, fzg_no: "228" };
+for (var fzg_key in fzg_stu) { /* fzg_key 是属性名 */ }
+
+// for...of：遍历数组的值
+var fzg_arr = [10, 20, 30];
+for (var fzg_val of fzg_arr) { /* fzg_val 是元素值 */ }</pre>
+      <div id="fzg_out_forin" class="fzg_out"></div>
+    </div>
+
+    <!-- 五、break 与 continue -->
+    <div class="fzg_card">
+      <h3>五、break 与 continue</h3>
+      <pre class="fzg_code">// break：立即终止整个循环
+// continue：跳过本次循环，进入下一次
+for (var fzg_i = 1; fzg_i <= 10; fzg_i++) {
+  if (fzg_i === 3) continue;   // 跳过 3
+  if (fzg_i === 7) break;      // 到 7 结束
+}</pre>
+      <div id="fzg_out_break" class="fzg_out"></div>
+    </div>
+
+    <!-- 六、嵌套循环：九九乘法表 -->
+    <div class="fzg_card">
+      <h3>六、嵌套循环 —— 九九乘法表</h3>
+      <pre class="fzg_code">// 外层控制行，内层控制列
+for (var fzg_i = 1; fzg_i <= 9; fzg_i++) {
+  for (var fzg_j = 1; fzg_j <= fzg_i; fzg_j++) {
+    // fzg_j × fzg_i = 积
+  }
+}</pre>
+      <div id="fzg_out_table"></div>
+    </div>
+
+  </div>
+
+  <script>
+    // ===== 输出工具：同时写页面和控制台 =====
+    function fzg_print(id, text) {
+      document.getElementById(id).textContent += text + "\n";
+      console.log(text);
+    }
+
+    // ===== 一、for 循环：1~10 累加并输出 =====
+    var fzg_total = 0;
+    var fzg_parts = [];
+    for (var fzg_i = 1; fzg_i <= 10; fzg_i++) {
+      fzg_total += fzg_i;
+      fzg_parts.push(fzg_i);
+    }
+    fzg_print("fzg_out_for",
+      "累加过程: " + fzg_parts.join(" + ") + "\n" +
+      "1~10 累加结果 = " + fzg_total +
+      "（for 循环执行了 10 次）");
+
+    // ===== 二、while 与 do...while 对比 =====
+    var fzg_n = 1;
+    var fzg_steps = [];
+    while (fzg_n <= 5) {
+      fzg_steps.push(fzg_n);
+      fzg_n *= 2;
+    }
+    fzg_print("fzg_out_while",
+      "while: fzg_n 依次为 " + fzg_steps.join(" → ") + "，最终 fzg_n = " + fzg_n +
+      "（先判断后执行）");
+
+    var fzg_m = 100;
+    var fzg_doCount = 0;
+    do {
+      fzg_m++;
+      fzg_doCount++;
+    } while (fzg_m < 100);
+    fzg_print("fzg_out_while",
+      "do...while: 条件一开始就不成立，但循环体仍执行了 " + fzg_doCount +
+      " 次（先执行后判断，至少执行一次）");
+
+    // ===== 三、for...in 与 for...of =====
+    var fzg_stu = { fzg_name: "冯子格", fzg_age: 20, fzg_no: "228" };
+    for (var fzg_key in fzg_stu) {
+      fzg_print("fzg_out_forin", "for...in  键: " + fzg_key + " 值: " + fzg_stu[fzg_key]);
+    }
+    var fzg_arr = [10, 20, 30];
+    var fzg_vals = [];
+    for (var fzg_val of fzg_arr) {
+      fzg_vals.push(fzg_val);
+    }
+    fzg_print("fzg_out_forin", "for...of  数组元素依次为: " + fzg_vals.join(", "));
+
+    // ===== 四、break 与 continue =====
+    var fzg_skipped = [];
+    var fzg_kept = [];
+    for (var fzg_k = 1; fzg_k <= 10; fzg_k++) {
+      if (fzg_k === 3) {
+        fzg_skipped.push(fzg_k);
+        continue;      // 跳过 3
+      }
+      if (fzg_k === 7) {
+        fzg_skipped.push(fzg_k + "(break 终止)");
+        break;         // 7 处终止
+      }
+      fzg_kept.push(fzg_k);
+    }
+    fzg_print("fzg_out_break",
+      "continue 跳过: " + fzg_skipped[0] + "\n" +
+      "break 在 " + fzg_skipped[1] + "\n" +
+      "实际输出的数字: " + fzg_kept.join(", "));
+
+    // ===== 五、嵌套循环：九九乘法表 =====
+    var fzg_tableEl = document.getElementById("fzg_out_table");
+    for (var fzg_row = 1; fzg_row <= 9; fzg_row++) {
+      var fzg_rowEl = document.createElement("div");
+      fzg_rowEl.className = "fzg_table-row";
+      var fzg_line = "";
+      for (var fzg_col = 1; fzg_col <= fzg_row; fzg_col++) {
+        var fzg_cell = document.createElement("span");
+        fzg_cell.className = "fzg_table-cell";
+        var fzg_text = fzg_col + "×" + fzg_row + "=" + (fzg_col * fzg_row);
+        fzg_cell.textContent = fzg_text;
+        fzg_rowEl.appendChild(fzg_cell);
+        fzg_line += fzg_text + "  ";
+      }
+      fzg_tableEl.appendChild(fzg_rowEl);
+      console.log(fzg_line);
+    }
+  </script>
+</body>
+</html>
