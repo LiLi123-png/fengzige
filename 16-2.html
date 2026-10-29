@@ -1,0 +1,374 @@
+<!--
+  姓名：冯子格
+  日期：2026-10-29
+  功能：形象化演示 JavaScript 对象与字符串——对象属性卡片、增删改遍历，字符串字符方块、截取查找替换拆分等方法
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>JS 对象与字符串演示 - 冯子格</title>
+  <style>
+    /* 变量、类名统一 fzg_ 前缀 */
+    :root {
+      --fzg_primary: #4a90e2;
+      --fzg_add: #2ecc71;
+      --fzg_del: #e74c3c;
+      --fzg_warn: #f39c12;
+      --fzg_pure: #9b59b6;
+      --fzg_bg: #f5f6f8;
+      --fzg_card: #ffffff;
+      --fzg_text: #333;
+      --fzg_muted: #888;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      background: var(--fzg_bg);
+      color: var(--fzg_text);
+      padding: 20px;
+      line-height: 1.8;
+    }
+    .fzg_container { max-width: 900px; margin: 0 auto; }
+    .fzg_title { font-size: 20px; color: var(--fzg_primary); margin-bottom: 6px; }
+    .fzg_author { font-size: 14px; color: var(--fzg_muted); margin-bottom: 14px; }
+    .fzg_card {
+      background: var(--fzg_card);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+    .fzg_card h3 { color: var(--fzg_primary); margin-bottom: 10px; font-size: 16px; }
+    .fzg_tip { font-size: 13px; color: var(--fzg_muted); margin-bottom: 10px; }
+    .fzg_code {
+      background: #2d2d2d;
+      color: #ccc;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      overflow-x: auto;
+      font-family: Consolas, "Courier New", monospace;
+      white-space: pre;
+      margin-bottom: 10px;
+    }
+    .fzg_code b { color: #ffd479; font-weight: normal; }
+    .fzg_out {
+      background: #f0f7ff;
+      border: 1px solid var(--fzg_primary);
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+      word-break: break-all;
+      margin-top: 10px;
+    }
+    .fzg_btn {
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      padding: 6px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      margin: 2px 6px 6px 0;
+      font-family: inherit;
+    }
+    .fzg_btn:hover { filter: brightness(1.1); }
+    .fzg_btn.fzg_green { background: var(--fzg_add); }
+    .fzg_btn.fzg_red { background: var(--fzg_del); }
+    .fzg_btn.fzg_orange { background: var(--fzg_warn); }
+    .fzg_btn.fzg_purple { background: var(--fzg_pure); }
+    .fzg_btn.fzg_blue { background: var(--fzg_primary); }
+
+    /* ===== 对象属性卡片可视化 ===== */
+    .fzg_objcard {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 12px;
+      background: linear-gradient(135deg, #eaf3fd, #f6f9fe);
+      border: 2px dashed var(--fzg_primary);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      min-height: 52px;
+    }
+    .fzg_prop {
+      display: flex;
+      align-items: center;
+      border-radius: 6px;
+      overflow: hidden;
+      font-family: Consolas, monospace;
+      font-size: 13px;
+      animation: fzg_pop 0.3s ease;
+    }
+    .fzg_prop .fzg_key {
+      background: var(--fzg_primary);
+      color: #fff;
+      padding: 4px 10px;
+    }
+    .fzg_prop .fzg_val {
+      background: #fff;
+      color: #2c6cb0;
+      border: 1px solid #cfe4f9;
+      border-left: none;
+      padding: 4px 10px;
+      border-radius: 0 6px 6px 0;
+    }
+    @keyframes fzg_pop { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    /* ===== 字符串字符方块可视化 ===== */
+    .fzg_strow { display: flex; flex-wrap: wrap; gap: 5px; align-items: flex-end; margin-bottom: 8px; }
+    .fzg_char {
+      min-width: 34px;
+      text-align: center;
+      padding: 6px 4px 3px;
+      border-radius: 6px;
+      background: var(--fzg_primary);
+      color: #fff;
+      font-family: Consolas, monospace;
+      font-size: 15px;
+      animation: fzg_pop 0.3s ease;
+    }
+    .fzg_char small { display: block; font-size: 9px; opacity: 0.8; font-weight: normal; }
+    .fzg_char.fzg_space { background: #b9c6d8; }
+    .fzg_char.fzg_cjk { background: var(--fzg_pure); }
+    .fzg_char.fzg_digit { background: var(--fzg_warn); }
+    .fzg_result-row { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; min-height: 40px; }
+    .fzg_rchip {
+      padding: 4px 10px;
+      border-radius: 14px;
+      background: #e8f8f0;
+      border: 1px solid #bfe8d2;
+      color: #1e8e5a;
+      font-family: Consolas, monospace;
+      font-size: 13px;
+      animation: fzg_pop 0.3s ease;
+    }
+    .fzg_rchip.fzg_rtext { background: #fdeaea; border-color: #f5c6c6; color: #c0392b; }
+
+    /* ===== 速查表 ===== */
+    .fzg_table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .fzg_table th, .fzg_table td { border: 1px solid #eee; padding: 6px 10px; text-align: left; }
+    .fzg_table th { background: #eaf3fd; color: #2c6cb0; }
+    .fzg_badge { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; color: #fff; }
+    .fzg_badge.fzg_obj { background: var(--fzg_primary); }
+    .fzg_badge.fzg_str { background: var(--fzg_pure); }
+  </style>
+</head>
+<body>
+  <div class="fzg_container">
+
+    <h1 class="fzg_title">JavaScript 对象与字符串图解</h1>
+    <p class="fzg_author">制作：冯子格</p>
+
+    <!-- 一、对象：属性卡片 -->
+    <div class="fzg_card">
+      <h3>一、对象 —— 一张会变的属性卡片</h3>
+      <p class="fzg_tip">对象由"键: 值"组成。蓝色是键（属性名），白色是值。点按钮实时增删属性。</p>
+      <pre class="fzg_code" id="fzg_code_obj"></pre>
+      <div id="fzg_objcard" class="fzg_objcard"></div>
+      <button class="fzg_btn fzg_green" id="fzg_btn_add">添加属性 fzg_gender: "男"</button>
+      <button class="fzg_btn fzg_red" id="fzg_btn_del">delete 删除 fzg_age</button>
+      <button class="fzg_btn fzg_orange" id="fzg_btn_modify">修改 fzg_age 为 21</button>
+      <button class="fzg_btn fzg_purple" id="fzg_btn_method">调用方法 fzg_student.fzg_sayHi()</button>
+      <div id="fzg_log_obj" class="fzg_out"></div>
+    </div>
+
+    <!-- 二、对象遍历 -->
+    <div class="fzg_card">
+      <h3>二、对象遍历 —— for...in 与 Object.keys / values / entries</h3>
+      <pre class="fzg_code">for (var fzg_key in fzg_student) { /* 遍历属性名 */ }
+Object.<b>keys</b>(fzg_student)      // 所有键
+Object.<b>values</b>(fzg_student)    // 所有值
+Object.<b>entries</b>(fzg_student)   // [键, 值] 数组</pre>
+      <div id="fzg_out_iter" class="fzg_out"></div>
+    </div>
+
+    <!-- 三、字符串：字符方块 -->
+    <div class="fzg_card">
+      <h3>三、字符串 —— 也可以看成"字符数组"</h3>
+      <p class="fzg_tip">紫块=汉字，橙块=数字，灰块=空格。灰色小字是下标，字符串也有 length 和下标访问。</p>
+      <pre class="fzg_code">var fzg_str = "Hi 冯子格 228";
+fzg_str.<b>length</b>            // 长度（空格也算 1 个）
+fzg_str[0] / fzg_str.<b>at</b>(-1)   // 按下标取字符，at(-1) 取最后一个</pre>
+      <div id="fzg_strow" class="fzg_strow"></div>
+      <div id="fzg_out_str" class="fzg_out"></div>
+    </div>
+
+    <!-- 四、字符串常用方法 -->
+    <div class="fzg_card">
+      <h3>四、字符串常用方法 —— 点按钮看结果（原字符串不变）</h3>
+      <pre class="fzg_code">fzg_str.<b>slice</b>(0, 2)            // 截取 "Hi"
+fzg_str.<b>indexOf</b>("冯")          // 查位置
+fzg_str.<b>includes</b>("228")        // 是否包含
+fzg_str.<b>replace</b>("228", "666")  // 替换
+fzg_str.<b>split</b>(" ")             // 按空格拆成数组
+fzg_str.<b>trim</b>() / <b>toUpperCase</b>() / <b>repeat</b>(2)</pre>
+      <div id="fzg_result" class="fzg_result-row"></div>
+      <div style="margin-top:10px;">
+        <button class="fzg_btn fzg_blue" id="fzg_btn_slice">slice(0, 2)</button>
+        <button class="fzg_btn fzg_blue" id="fzg_btn_indexof">indexOf("冯")</button>
+        <button class="fzg_btn fzg_blue" id="fzg_btn_includes">includes("228")</button>
+        <button class="fzg_btn fzg_orange" id="fzg_btn_replace">replace("228", "666")</button>
+        <button class="fzg_btn fzg_orange" id="fzg_btn_split">split(" ")</button>
+        <button class="fzg_btn fzg_purple" id="fzg_btn_upper">toUpperCase()</button>
+        <button class="fzg_btn fzg_green" id="fzg_btn_concat">concat + repeat(2)</button>
+        <button class="fzg_btn fzg_green" id="fzg_btn_template">模板字符串拼接</button>
+        <button class="fzg_btn fzg_red" id="fzg_btn_clear">清空结果</button>
+      </div>
+      <div id="fzg_log_str" class="fzg_out"></div>
+    </div>
+
+    <!-- 五、速查表 -->
+    <div class="fzg_card">
+      <h3>五、对象与字符串速查表</h3>
+      <table class="fzg_table">
+        <tr><th>操作</th><th>写法</th><th>说明</th></tr>
+        <tr><td><span class="fzg_badge fzg_obj">对象</span> 访问属性</td><td>fzg_obj.fzg_key 或 fzg_obj["fzg_key"]</td><td>点语法简洁，方括号可用变量</td></tr>
+        <tr><td><span class="fzg_badge fzg_obj">对象</span> 新增/修改</td><td>fzg_obj.fzg_key = 值</td><td>键存在即修改，不存在即新增</td></tr>
+        <tr><td><span class="fzg_badge fzg_obj">对象</span> 删除属性</td><td>delete fzg_obj.fzg_key</td><td>属性彻底移除</td></tr>
+        <tr><td><span class="fzg_badge fzg_obj">对象</span> 遍历</td><td>for...in / Object.keys / values / entries</td><td>in 遍历键，entries 键值成对</td></tr>
+        <tr><td><span class="fzg_badge fzg_obj">对象</span> 方法与 this</td><td>fzg_sayHi: function() { return this.fzg_name; }</td><td>this 指向调用时的对象</td></tr>
+        <tr><td><span class="fzg_badge fzg_str">字符串</span> 取字符</td><td>fzg_str[i] / fzg_str.at(-1) / charAt(i)</td><td>at 支持负下标</td></tr>
+        <tr><td><span class="fzg_badge fzg_str">字符串</span> 截取</td><td>slice(起, 止) / substring(起, 止)</td><td>含头不含尾，不改原字符串</td></tr>
+        <tr><td><span class="fzg_badge fzg_str">字符串</span> 查找</td><td>indexOf / includes / startsWith</td><td>返回位置或布尔值</td></tr>
+        <tr><td><span class="fzg_badge fzg_str">字符串</span> 变换</td><td>replace / toUpperCase / trim / concat</td><td>字符串不可变，均返回新串</td></tr>
+        <tr><td><span class="fzg_badge fzg_str">字符串</span> 拆分拼接</td><td>split(" ") 拆成数组，join(" ") 数组转字符串</td><td>与数组方法互相配合</td></tr>
+        <tr><td><span class="fzg_badge fzg_str">字符串</span> 模板字符串</td><td>`姓名：${fzg_name}`</td><td>反引号 + ${} 直接嵌变量</td></tr>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    // ===== 工具：日志输出（页面 + 控制台同步） =====
+    function fzg_log(elId, text) {
+      document.getElementById(elId).textContent += "> " + text + "\n";
+      console.log(text);
+    }
+
+    // ===== 一、对象属性卡片 =====
+    var fzg_student = { fzg_name: "冯子格", fzg_age: 20, fzg_no: "228" };
+    var fzg_cardEl = document.getElementById("fzg_objcard");
+    var fzg_codeObjEl = document.getElementById("fzg_code_obj");
+
+    function fzg_renderObj() {
+      fzg_cardEl.innerHTML = "";
+      var fzg_keys = Object.keys(fzg_student);
+      if (fzg_keys.length === 0) {
+        fzg_cardEl.innerHTML = '<span style="color:#999;font-size:13px;">（对象已空）</span>';
+      }
+      fzg_keys.forEach(function (fzg_k) {
+        var fzg_p = document.createElement("span");
+        fzg_p.className = "fzg_prop";
+        fzg_p.innerHTML = '<span class="fzg_key">' + fzg_k +
+          '</span><span class="fzg_val">' + fzg_student[fzg_k] + "</span>";
+        fzg_cardEl.appendChild(fzg_p);
+      });
+      fzg_codeObjEl.textContent = "var fzg_student = " + JSON.stringify(fzg_student) + ";";
+    }
+    fzg_renderObj();
+
+    document.getElementById("fzg_btn_add").onclick = function () {
+      fzg_student.fzg_gender = "男";
+      fzg_renderObj();
+      fzg_log("fzg_log_obj", 'fzg_student.fzg_gender = "男"  // 新增属性');
+    };
+    document.getElementById("fzg_btn_del").onclick = function () {
+      delete fzg_student.fzg_age;
+      fzg_renderObj();
+      fzg_log("fzg_log_obj", "delete fzg_student.fzg_age  // 删除属性");
+    };
+    document.getElementById("fzg_btn_modify").onclick = function () {
+      fzg_student.fzg_age = 21;
+      fzg_renderObj();
+      fzg_log("fzg_log_obj", "fzg_student.fzg_age = 21  // 键已存在 → 修改");
+    };
+    document.getElementById("fzg_btn_method").onclick = function () {
+      // 动态挂一个方法，this 指向 fzg_student 本身
+      fzg_student.fzg_sayHi = function () {
+        return "大家好，我是 " + this.fzg_name + "，学号 " + this.fzg_no;
+      };
+      fzg_renderObj();
+      fzg_log("fzg_log_obj", "fzg_student.fzg_sayHi() → " + fzg_student.fzg_sayHi());
+    };
+
+    // ===== 二、对象遍历 =====
+    var fzg_iterLines = [];
+    for (var fzg_k in fzg_student) {
+      fzg_iterLines.push("for...in  " + fzg_k + " = " + fzg_student[fzg_k]);
+    }
+    fzg_iterLines.push("Object.keys(fzg_student)   → " + JSON.stringify(Object.keys(fzg_student)));
+    fzg_iterLines.push("Object.values(fzg_student) → " + JSON.stringify(Object.values(fzg_student)));
+    fzg_iterLines.push("Object.entries(fzg_student)→ " + JSON.stringify(Object.entries(fzg_student)));
+    document.getElementById("fzg_out_iter").textContent = fzg_iterLines.join("\n");
+    console.log(fzg_iterLines);
+
+    // ===== 三、字符串字符方块 =====
+    var fzg_str = "Hi 冯子格 228";
+    var fzg_strowEl = document.getElementById("fzg_strow");
+    function fzg_charType(fzg_c) {
+      if (fzg_c === " ") return "fzg_space";
+      if (fzg_c >= "0" && fzg_c <= "9") return "fzg_digit";
+      if (fzg_c.charCodeAt(0) > 255) return "fzg_cjk";
+      return "";
+    }
+    fzg_str.split("").forEach(function (fzg_c, fzg_i) {
+      var fzg_box = document.createElement("span");
+      fzg_box.className = "fzg_char " + fzg_charType(fzg_c);
+      var fzg_show = fzg_c === " " ? "␣" : fzg_c;
+      fzg_box.innerHTML = fzg_show + "<small>[" + fzg_i + "]</small>";
+      fzg_strowEl.appendChild(fzg_box);
+    });
+    var fzg_strInfo = [
+      'fzg_str.length → ' + fzg_str.length + '（含 2 个空格）',
+      'fzg_str[0] → "' + fzg_str[0] + '"    fzg_str.at(-1) → "' + fzg_str.at(-1) + '"（最后一个字符）',
+      'fzg_str[3] → "' + fzg_str[3] + '"（汉字同样按下标取）'
+    ];
+    document.getElementById("fzg_out_str").textContent = fzg_strInfo.join("\n");
+    console.log(fzg_strInfo);
+
+    // ===== 四、字符串常用方法（结果以圆片呈现） =====
+    var fzg_resultEl = document.getElementById("fzg_result");
+    function fzg_showResult(label, value, isTextArr) {
+      var fzg_chip = document.createElement("span");
+      fzg_chip.className = "fzg_rchip" + (isTextArr ? " fzg_rtext" : "");
+      fzg_chip.textContent = label + " → " + value;
+      fzg_resultEl.appendChild(fzg_chip);
+      fzg_log("fzg_log_str", label + " → " + value);
+    }
+    document.getElementById("fzg_btn_slice").onclick = function () {
+      fzg_showResult('slice(0, 2)', '"' + fzg_str.slice(0, 2) + '"', true);
+    };
+    document.getElementById("fzg_btn_indexof").onclick = function () {
+      fzg_showResult('indexOf("冯")', fzg_str.indexOf("冯"), false);
+    };
+    document.getElementById("fzg_btn_includes").onclick = function () {
+      fzg_showResult('includes("228")', fzg_str.includes("228"), false);
+    };
+    document.getElementById("fzg_btn_replace").onclick = function () {
+      fzg_showResult('replace("228", "666")', '"' + fzg_str.replace("228", "666") + '"', true);
+    };
+    document.getElementById("fzg_btn_split").onclick = function () {
+      fzg_showResult('split(" ")', JSON.stringify(fzg_str.split(" ")), true);
+    };
+    document.getElementById("fzg_btn_upper").onclick = function () {
+      fzg_showResult("toUpperCase()", '"' + fzg_str.toUpperCase() + '"', true);
+    };
+    document.getElementById("fzg_btn_concat").onclick = function () {
+      fzg_showResult('concat("!!").repeat(2)', '"' + fzg_str.concat("!!").repeat(2) + '"', true);
+    };
+    document.getElementById("fzg_btn_template").onclick = function () {
+      var fzg_msg = `姓名：${fzg_student.fzg_name}，学号 ${fzg_student.fzg_no}`;
+      fzg_showResult("`模板字符串`", '"' + fzg_msg + '"', true);
+    };
+    document.getElementById("fzg_btn_clear").onclick = function () {
+      fzg_resultEl.innerHTML = "";
+      document.getElementById("fzg_log_str").textContent = "";
+    };
+  </script>
+</body>
+</html>

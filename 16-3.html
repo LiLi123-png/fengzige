@@ -1,0 +1,291 @@
+<!--
+  姓名：冯子格
+  日期：2026-10-29
+  功能：JS 图片轮播器——用对象数组管理 4 张给定风景图，实现左右切换、圆点导航、缩略图跳转与自动播放
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>JS 图片轮播 - 冯子格</title>
+  <style>
+    /* 类名统一 fzg_ 前缀 */
+    :root {
+      --fzg_primary: #4a90e2;
+      --fzg_dark: #2c3e50;
+      --fzg_bg: #f5f6f8;
+      --fzg_muted: #888;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      background: var(--fzg_bg);
+      color: #333;
+      padding: 20px;
+      line-height: 1.8;
+    }
+    .fzg_container { max-width: 760px; margin: 0 auto; }
+    .fzg_title { font-size: 20px; color: var(--fzg_primary); margin-bottom: 6px; }
+    .fzg_author { font-size: 14px; color: var(--fzg_muted); margin-bottom: 16px; }
+
+    /* ===== 轮播主舞台 ===== */
+    .fzg_stage {
+      position: relative;
+      width: 100%;
+      height: 420px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+      background: #000;
+    }
+    .fzg_stage img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .fzg_stage img.fzg_active { opacity: 1; }
+
+    /* 底部文字说明条 */
+    .fzg_caption {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      padding: 26px 18px 12px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.65));
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      pointer-events: none;
+    }
+    .fzg_caption h2 { font-size: 18px; font-weight: normal; }
+    .fzg_caption p { font-size: 12px; opacity: 0.85; }
+    .fzg_counter {
+      font-family: Consolas, monospace;
+      font-size: 13px;
+      background: rgba(0,0,0,0.45);
+      padding: 2px 10px;
+      border-radius: 10px;
+    }
+
+    /* 左右箭头 */
+    .fzg_arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 42px;
+      height: 42px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.35);
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      transition: background 0.2s;
+      line-height: 1;
+    }
+    .fzg_arrow:hover { background: rgba(0,0,0,0.6); }
+    .fzg_arrow.fzg_prev { left: 14px; }
+    .fzg_arrow.fzg_next { right: 14px; }
+
+    /* ===== 圆点导航 ===== */
+    .fzg_dots { text-align: center; margin-top: 14px; }
+    .fzg_dot {
+      display: inline-block;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #c3ced9;
+      margin: 0 5px;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .fzg_dot.fzg_on { background: var(--fzg_primary); transform: scale(1.25); }
+
+    /* ===== 缩略图 ===== */
+    .fzg_thumbs {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+    .fzg_thumb {
+      width: 150px;
+      height: 92px;
+      object-fit: cover;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 3px solid transparent;
+      opacity: 0.75;
+      transition: all 0.25s;
+      display: block;
+    }
+    .fzg_thumb:hover { opacity: 1; }
+    .fzg_thumb.fzg_on { border-color: var(--fzg_primary); opacity: 1; }
+
+    /* ===== 控制行 ===== */
+    .fzg_ctrl { text-align: center; margin-top: 16px; }
+    .fzg_btn {
+      border: none;
+      border-radius: 6px;
+      background: var(--fzg_primary);
+      color: #fff;
+      padding: 8px 20px;
+      font-size: 14px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .fzg_btn:hover { filter: brightness(1.1); }
+    .fzg_btn.fzg_stop { background: #e74c3c; }
+    .fzg_tip { font-size: 12px; color: var(--fzg_muted); margin-top: 8px; }
+
+    @media (max-width: 560px) {
+      .fzg_stage { height: 260px; }
+      .fzg_thumb { width: 100px; height: 62px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="fzg_container">
+
+    <h1 class="fzg_title">JavaScript 图片轮播器</h1>
+    <p class="fzg_author">制作：冯子格 —— 图片数据用对象数组管理，纯原生 JS 实现</p>
+
+    <!-- 轮播主舞台：4 张图叠放，淡入淡出切换 -->
+    <div class="fzg_stage" id="fzg_stage"></div>
+
+    <!-- 圆点导航 -->
+    <div class="fzg_dots" id="fzg_dots"></div>
+
+    <!-- 缩略图跳转 -->
+    <div class="fzg_thumbs" id="fzg_thumbs"></div>
+
+    <!-- 控制按钮 -->
+    <div class="fzg_ctrl">
+      <button class="fzg_btn" id="fzg_btn_auto">暂停自动播放</button>
+      <p class="fzg_tip">支持：左右箭头切换 · 圆点直达 · 缩略图跳转 · 鼠标悬停在图片上自动暂停</p>
+    </div>
+
+  </div>
+
+  <script>
+    // ===== 图片数据：对象数组（衔接 16-2 对象知识点） =====
+    var fzg_imgs = [
+      { fzg_src: "img/16-3-1.png", fzg_title: "青山旭日", fzg_desc: "阳光洒满山林，绿意盎然" },
+      { fzg_src: "img/16-3-2.png", fzg_title: "暮色湖光", fzg_desc: "群山与秋林倒映在平静的湖面" },
+      { fzg_src: "img/16-3-3.png", fzg_title: "碧水秋山", fzg_desc: "高原湖泊映着蓝天与彩林" },
+      { fzg_src: "img/16-3-4.png", fzg_title: "雪峰湖畔", fzg_desc: "雪山脚下，木屋与松林环绕湖泊" }
+    ];
+    var fzg_idx = 0;           // 当前显示第几张
+    var fzg_timer = null;      // 自动播放定时器
+    var fzg_playing = true;
+
+    var fzg_stageEl  = document.getElementById("fzg_stage");
+    var fzg_dotsEl   = document.getElementById("fzg_dots");
+    var fzg_thumbsEl = document.getElementById("fzg_thumbs");
+
+    // ===== 初始化：按数据生成 img、圆点、缩略图 =====
+    fzg_imgs.forEach(function (fzg_item, fzg_i) {
+      // 主图
+      var fzg_img = document.createElement("img");
+      fzg_img.src = fzg_item.fzg_src;
+      fzg_img.alt = fzg_item.fzg_title;
+      fzg_img.className = "fzg_pic";
+      fzg_stageEl.appendChild(fzg_img);
+
+      // 圆点
+      var fzg_dot = document.createElement("span");
+      fzg_dot.className = "fzg_dot";
+      fzg_dot.onclick = function () { fzg_show(fzg_i); };
+      fzg_dotsEl.appendChild(fzg_dot);
+
+      // 缩略图
+      var fzg_thumb = document.createElement("img");
+      fzg_thumb.src = fzg_item.fzg_src;
+      fzg_thumb.alt = fzg_item.fzg_title;
+      fzg_thumb.className = "fzg_thumb";
+      fzg_thumb.onclick = function () { fzg_show(fzg_i); };
+      fzg_thumbsEl.appendChild(fzg_thumb);
+    });
+
+    // 说明条与箭头（保持在上层）
+    var fzg_captionBox = document.createElement("div");
+    fzg_captionBox.className = "fzg_caption";
+    fzg_captionBox.innerHTML =
+      '<div><h2 id="fzg_cap_title"></h2><p id="fzg_cap_desc"></p></div>' +
+      '<span class="fzg_counter" id="fzg_cap_counter"></span>';
+    fzg_stageEl.appendChild(fzg_captionBox);
+
+    var fzg_prevBtn = document.createElement("button");
+    fzg_prevBtn.className = "fzg_arrow fzg_prev";
+    fzg_prevBtn.innerHTML = "&#10094;";
+    fzg_prevBtn.onclick = function () { fzg_show((fzg_idx - 1 + fzg_imgs.length) % fzg_imgs.length); };
+    fzg_stageEl.appendChild(fzg_prevBtn);
+
+    var fzg_nextBtn = document.createElement("button");
+    fzg_nextBtn.className = "fzg_arrow fzg_next";
+    fzg_nextBtn.innerHTML = "&#10095;";
+    fzg_nextBtn.onclick = function () { fzg_show((fzg_idx + 1) % fzg_imgs.length); };
+    fzg_stageEl.appendChild(fzg_nextBtn);
+
+    // ===== 核心切换函数 =====
+    function fzg_show(fzg_n) {
+      fzg_idx = fzg_n;
+      var fzg_pics   = fzg_stageEl.querySelectorAll("img.fzg_pic");
+      var fzg_dots   = fzg_dotsEl.children;
+      var fzg_thumbs = fzg_thumbsEl.children;
+      for (var fzg_i = 0; fzg_i < fzg_imgs.length; fzg_i++) {
+        fzg_pics[fzg_i].classList.toggle("fzg_active", fzg_i === fzg_idx);
+        fzg_dots[fzg_i].classList.toggle("fzg_on", fzg_i === fzg_idx);
+        fzg_thumbs[fzg_i].classList.toggle("fzg_on", fzg_i === fzg_idx);
+      }
+      document.getElementById("fzg_cap_title").textContent = fzg_imgs[fzg_idx].fzg_title;
+      document.getElementById("fzg_cap_desc").textContent = fzg_imgs[fzg_idx].fzg_desc;
+      document.getElementById("fzg_cap_counter").textContent = (fzg_idx + 1) + " / " + fzg_imgs.length;
+      console.log("切换到第 " + (fzg_idx + 1) + " 张：" + fzg_imgs[fzg_idx].fzg_title);
+    }
+
+    // ===== 自动播放 =====
+    function fzg_start() {
+      fzg_timer = setInterval(function () {
+        fzg_show((fzg_idx + 1) % fzg_imgs.length);
+      }, 3000);
+      fzg_playing = true;
+    }
+    function fzg_stop() {
+      clearInterval(fzg_timer);
+      fzg_playing = false;
+    }
+    fzg_start();
+    fzg_show(0);
+
+    // 暂停/继续按钮
+    document.getElementById("fzg_btn_auto").onclick = function () {
+      if (fzg_playing) {
+        fzg_stop();
+        this.textContent = "开始自动播放";
+        this.classList.add("fzg_stop");
+      } else {
+        fzg_start();
+        this.textContent = "暂停自动播放";
+        this.classList.remove("fzg_stop");
+      }
+    };
+
+    // 鼠标悬停暂停，移开继续（不影响"暂停自动播放"按钮的手动状态）
+    var fzg_hoverPaused = false;
+    fzg_stageEl.onmouseenter = function () {
+      if (fzg_playing) { clearInterval(fzg_timer); fzg_hoverPaused = true; }
+    };
+    fzg_stageEl.onmouseleave = function () {
+      if (fzg_playing && fzg_hoverPaused) { fzg_start(); fzg_hoverPaused = false; }
+    };
+  </script>
+</body>
+</html>

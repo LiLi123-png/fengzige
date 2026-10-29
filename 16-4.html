@@ -1,0 +1,198 @@
+<!--
+  姓名：冯子格
+  日期：2026-10-29
+  功能：课堂测试——"音乐手机"tab选项卡：四个页签切换行情/导购/新品/评测新闻列表，
+        页签与列表符使用 img/bg20.gif、bg21.gif、bg22.gif、dot.gif 素材，效果与给定截图一致
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>音乐手机 - tab选项卡 - 冯子格</title>
+  <style>
+    /* 类名统一 fzg_ 前缀 */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Microsoft YaHei", "SimSun", sans-serif;
+      font-size: 12px;
+      background: #fff;
+      color: #333;
+      padding: 24px;
+    }
+    .fzg_panel {
+      width: 352px;
+      margin: 0 auto;
+      border: 1px solid #9dc1e3;
+      background: #fff;
+    }
+
+    /* ===== 标题行 + 页签 ===== */
+    .fzg_header {
+      display: flex;
+      align-items: flex-end;
+      height: 25px;
+      border-bottom: 1px solid #9dc1e3;
+      background: url(img/bg20.gif) repeat-x left bottom; /* 24px 高渐变条 */
+    }
+    .fzg_header h2 {
+      font-size: 14px;
+      padding: 0 10px;
+      line-height: 24px;
+      letter-spacing: 2px;
+    }
+    .fzg_tabs {
+      list-style: none;
+      display: flex;
+      margin-left: auto;
+      margin-bottom: -1px;   /* 让选中页签盖住标题栏底边线 */
+    }
+    .fzg_tabs li {
+      width: 44px;
+      height: 22px;
+      line-height: 22px;
+      text-align: center;
+      margin-left: 3px;
+      background: url(img/bg21.gif) repeat-x;  /* 普通页签 */
+      border: 1px solid #9dc1e3;
+      border-bottom: none;
+      color: #333;
+      cursor: pointer;
+      user-select: none;
+    }
+    .fzg_tabs li:hover { color: #1f64b0; }
+    .fzg_tabs li.fzg_on {
+      background: url(img/bg22.gif) repeat-x;  /* 选中页签 */
+      background-color: #fff;
+      color: #1f64b0;
+      font-weight: bold;
+      height: 23px;            /* 比普通页签高 1px，与内容区相连 */
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ===== 内容区 ===== */
+    .fzg_content { padding: 4px 8px; }
+    .fzg_list { list-style: none; display: none; }
+    .fzg_list.fzg_show { display: block; }
+    .fzg_list li {
+      height: 25px;
+      line-height: 25px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    /* dot.gif 为 14x250 纵向精灵图，截取顶部第一个小方块做列表符 */
+    .fzg_list li::before {
+      content: "";
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      background: url(img/dot.gif) no-repeat 0 0;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+    .fzg_list li .fzg_date {
+      float: right;
+      color: #999;
+      padding-left: 8px;
+    }
+    .fzg_list li a {
+      color: #2059a8;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .fzg_list li a:hover {
+      color: #1f64b0;
+      text-decoration: underline;
+    }
+    /* 截图中呈黑色的条目 */
+    .fzg_list li a.fzg_dark { color: #000; }
+    /* 截图中呈红色的条目 */
+    .fzg_list li a.fzg_red { color: #cc0000; }
+  </style>
+</head>
+<body>
+
+  <div class="fzg_panel">
+    <div class="fzg_header">
+      <h2>音乐手机</h2>
+      <ul class="fzg_tabs" id="fzg_tabs">
+        <li class="fzg_on">行情</li>
+        <li>导购</li>
+        <li>新品</li>
+        <li>评测</li>
+      </ul>
+    </div>
+
+    <div class="fzg_content">
+      <!-- 行情 -->
+      <ul class="fzg_list fzg_show">
+        <li><span class="fzg_date">(12/19)</span><a href="javascript:;">音乐强劲 苹果iPhone 5价格稳定</a></li>
+        <li><span class="fzg_date">(12/19)</span><a href="javascript:;">高性能双核音乐手机 魅族MX3低价热卖</a></li>
+        <li><span class="fzg_date">(12/12)</span><a href="javascript:;">音乐品质最出色 vivo X3促销2199</a></li>
+        <li><span class="fzg_date">(11/27)</span><a href="javascript:;">时尚音乐手机 vivo Xplay仅2798元</a></li>
+        <li><span class="fzg_date">(08/27)</span><a href="javascript:;">好音乐好拍照 OPPO Find今报价2580元</a></li>
+        <li><span class="fzg_date">(07/30)</span><a href="javascript:;">1.5GHz四核1080p OPPO Find低价热卖</a></li>
+        <li><span class="fzg_date">(06/08)</span><a href="javascript:;">彩色呼吸灯双核机 索尼M35h促销2299</a></li>
+        <li><span class="fzg_date">(06/07)</span><a href="javascript:;">1.7GHz四核1080p vivo Xplay热卖中</a></li>
+      </ul>
+
+      <!-- 导购 -->
+      <ul class="fzg_list">
+        <li><span class="fzg_date">(09/13)</span><a href="javascript:;">优秀音效漂亮外观 市售音乐手机盘点</a></li>
+        <li><span class="fzg_date">(09/06)</span><a class="fzg_dark" href="javascript:;">不要虐待耳朵 8款独特音效的音乐手机荐</a></li>
+        <li><span class="fzg_date">(07/22)</span><a href="javascript:;">最低只要799 9款高性能音乐手机推荐</a></li>
+        <li><span class="fzg_date">(06/13)</span><a href="javascript:;">长假主导后高考时代 奖励孩子的智能手机全攻略</a></li>
+        <li><span class="fzg_date">(06/13)</span><a class="fzg_dark" href="javascript:;">降价不延时 端午后值得关注降价四核机推荐</a></li>
+        <li><span class="fzg_date">(06/13)</span><a href="javascript:;">高考之后尽情狂欢！学生超强手机推荐</a></li>
+        <li><span class="fzg_date">(06/13)</span><a class="fzg_dark" href="javascript:;">上半年看这里 最热1080P四核旗舰手机</a></li>
+        <li><span class="fzg_date">(05/08)</span><a href="javascript:;">最厚不过7.99毫米 热门超薄强机大搜罗</a></li>
+      </ul>
+
+      <!-- 新品 -->
+      <ul class="fzg_list">
+        <li><span class="fzg_date">(12/19)</span><a href="javascript:;">无限接近完美！ vivo Xplay3S现场体验</a></li>
+        <li><span class="fzg_date">(11/05)</span><a href="javascript:;">入门音乐机 诺基亚Lumia 625现身工信部</a></li>
+        <li><span class="fzg_date">(09/29)</span><a href="javascript:;">传诺基亚下月将推首款WP音乐手机Glee</a></li>
+        <li><span class="fzg_date">(08/23)</span><a href="javascript:;">软硬兼施 vivo Xstudio Hi-Fi音乐圈讲解</a></li>
+        <li><span class="fzg_date">(08/09)</span><a href="javascript:;">没有中国 省歌All Access音乐服务登欧洲</a></li>
+        <li><span class="fzg_date">(08/07)</span><a href="javascript:;">Hi-Fi录音棚 vivo X3定制Kstudio音乐系统</a></li>
+        <li><span class="fzg_date">(08/06)</span><a class="fzg_red" href="javascript:;">Hi-Fi不够vivo又玩录音棚 X3音乐处理方案曝光</a></li>
+        <li><span class="fzg_date">(07/31)</span><a href="javascript:;">小伙伴们都惊呆了 薄至6.9mm以下 vivo X3终露面</a></li>
+      </ul>
+
+      <!-- 评测 -->
+      <ul class="fzg_list">
+        <li><span class="fzg_date">(12/19)</span><a href="javascript:;">音乐历久弥新 TD版魅族MX3评测</a></li>
+        <li><span class="fzg_date">(07/24)</span><a href="javascript:;">极致影音完美音质 步步高vivo Xplay移动版图赏</a></li>
+        <li><span class="fzg_date">(06/20)</span><a href="javascript:;">都是大屏何不同？ 三星S4/Mega静态评测</a></li>
+        <li><span class="fzg_date">(06/20)</span><a href="javascript:;">超值四核智能机 HTC Desire 608t评测</a></li>
+        <li><span class="fzg_date">(06/18)</span><a href="javascript:;">完美融合微博 魅族MX2 Flyme 2.2.5体验</a></li>
+        <li><span class="fzg_date">(06/13)</span><a href="javascript:;">1080p屏Hi-Fi旗舰 vivo Xplay娱乐体验</a></li>
+        <li><span class="fzg_date">(06/06)</span><a href="javascript:;">5.7英寸高清巨屏 酷派9070+XO影音体验</a></li>
+        <li><span class="fzg_date">(05/06)</span><a href="javascript:;">悬浮窗口播放 vivo Xplay视频功能体验</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // ===== tab 选项卡核心逻辑 =====
+    var fzg_tabs = document.getElementById("fzg_tabs").getElementsByTagName("li");
+    var fzg_lists = document.getElementsByClassName("fzg_list");
+
+    // 数据驱动：点击页签 → 高亮自身、显示对应列表
+    for (var fzg_i = 0; fzg_i < fzg_tabs.length; fzg_i++) {
+      (function (fzg_n) {
+        fzg_tabs[fzg_n].onclick = function () {
+          for (var fzg_j = 0; fzg_j < fzg_tabs.length; fzg_j++) {
+            fzg_tabs[fzg_j].className = fzg_j === fzg_n ? "fzg_on" : "";
+            fzg_lists[fzg_j].className = "fzg_list" + (fzg_j === fzg_n ? " fzg_show" : "");
+          }
+          console.log("切换到页签：" + fzg_tabs[fzg_n].textContent);
+        };
+      })(fzg_i);
+    }
+  </script>
+</body>
+</html>
