@@ -1,0 +1,362 @@
+<!--
+  姓名：冯子格
+  日期：2026-10-29
+  功能：形象化演示 JavaScript 主要数组方法——增删操作、map/filter/reduce 数据变换、sort/reverse 排序以及方法速查表
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>JS 数组方法演示 - 冯子格</title>
+  <style>
+    /* 变量、类名统一 fzg_ 前缀 */
+    :root {
+      --fzg_primary: #4a90e2;
+      --fzg_add: #2ecc71;
+      --fzg_del: #e74c3c;
+      --fzg_warn: #f39c12;
+      --fzg_pure: #9b59b6;
+      --fzg_bg: #f5f6f8;
+      --fzg_card: #ffffff;
+      --fzg_text: #333;
+      --fzg_muted: #888;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      background: var(--fzg_bg);
+      color: var(--fzg_text);
+      padding: 20px;
+      line-height: 1.8;
+    }
+    .fzg_container { max-width: 900px; margin: 0 auto; }
+    .fzg_title { font-size: 20px; color: var(--fzg_primary); margin-bottom: 6px; }
+    .fzg_author { font-size: 14px; color: var(--fzg_muted); margin-bottom: 14px; }
+    .fzg_card {
+      background: var(--fzg_card);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+    .fzg_card h3 { color: var(--fzg_primary); margin-bottom: 10px; font-size: 16px; }
+    .fzg_tip { font-size: 13px; color: var(--fzg_muted); margin-bottom: 10px; }
+    .fzg_code {
+      background: #2d2d2d;
+      color: #ccc;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      overflow-x: auto;
+      font-family: Consolas, "Courier New", monospace;
+      white-space: pre;
+      margin-bottom: 10px;
+    }
+    .fzg_out {
+      background: #f0f7ff;
+      border: 1px solid var(--fzg_primary);
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+      word-break: break-all;
+      margin-top: 10px;
+    }
+    /* 方块数组可视化 */
+    .fzg_boxrow { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-height: 56px; padding: 8px; background: #fafbfc; border: 1px dashed #d5dbe3; border-radius: 6px; margin-bottom: 10px; }
+    .fzg_box {
+      min-width: 48px;
+      padding: 6px 8px;
+      text-align: center;
+      border-radius: 6px;
+      color: #fff;
+      font-family: Consolas, monospace;
+      font-size: 14px;
+      background: var(--fzg_primary);
+      animation: fzg_pop 0.3s ease;
+      position: relative;
+    }
+    .fzg_box small { display: block; font-size: 10px; opacity: 0.85; }
+    @keyframes fzg_pop { from { transform: scale(0.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .fzg_btn {
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      padding: 6px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      margin: 2px 6px 6px 0;
+      font-family: inherit;
+    }
+    .fzg_btn:hover { filter: brightness(1.1); }
+    .fzg_btn.fzg_green { background: var(--fzg_add); }
+    .fzg_btn.fzg_red { background: var(--fzg_del); }
+    .fzg_btn.fzg_orange { background: var(--fzg_warn); }
+    .fzg_btn.fzg_purple { background: var(--fzg_pure); }
+    .fzg_btn.fzg_blue { background: var(--fzg_primary); }
+    /* 流水线演示 */
+    .fzg_flow-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .fzg_flow-label {
+      min-width: 130px;
+      font-size: 13px;
+      font-weight: bold;
+      color: var(--fzg_text);
+    }
+    .fzg_chip {
+      min-width: 40px;
+      text-align: center;
+      padding: 4px 8px;
+      border-radius: 14px;
+      font-family: Consolas, monospace;
+      font-size: 13px;
+      background: #eaf3fd;
+      color: #2c6cb0;
+      border: 1px solid #cfe4f9;
+    }
+    .fzg_chip.fzg_hot { background: #fdeaea; color: #c0392b; border-color: #f5c6c6; }
+    /* 速查表 */
+    .fzg_table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .fzg_table th, .fzg_table td { border: 1px solid var(--fzg_border, #eee); padding: 6px 10px; text-align: left; }
+    .fzg_table th { background: #eaf3fd; color: #2c6cb0; }
+    .fzg_badge { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; color: #fff; }
+    .fzg_badge.fzg_yes { background: var(--fzg_del); }
+    .fzg_badge.fzg_no { background: var(--fzg_add); }
+    .fzg_badge.fzg_maybe { background: var(--fzg_warn); }
+    .fzg_code b { color: #ffd479; font-weight: normal; }
+  </style>
+</head>
+<body>
+  <div class="fzg_container">
+
+    <h1 class="fzg_title">JavaScript 主要数组方法图解</h1>
+    <p class="fzg_author">制作：冯子格</p>
+
+    <!-- 一、增删方法：可视化操作 -->
+    <div class="fzg_card">
+      <h3>一、增删方法 —— 点击按钮，直观感受数组变化</h3>
+      <p class="fzg_tip">绿色 = 添加，红色 = 删除。灰色小字是元素下标。所有方法都会<span style="color:#e74c3c;">改变原数组</span>。</p>
+      <pre class="fzg_code" id="fzg_code_arr"></pre>
+      <div id="fzg_box_arr" class="fzg_boxrow"></div>
+      <button class="fzg_btn fzg_green" id="fzg_btn_push">push(99) 尾部添加</button>
+      <button class="fzg_btn fzg_red" id="fzg_btn_pop">pop() 尾部删除</button>
+      <button class="fzg_btn fzg_green" id="fzg_btn_unshift">unshift(1) 头部添加</button>
+      <button class="fzg_btn fzg_red" id="fzg_btn_shift">shift() 头部删除</button>
+      <button class="fzg_btn fzg_orange" id="fzg_btn_splice">splice(1,2) 删中间2个</button>
+      <button class="fzg_btn fzg_purple" id="fzg_btn_reset">重置数组</button>
+      <div id="fzg_log_arr" class="fzg_out"></div>
+    </div>
+
+    <!-- 二、map / filter / reduce 流水线 -->
+    <div class="fzg_card">
+      <h3>二、map / filter / reduce —— 数据加工流水线（不改变原数组）</h3>
+      <p class="fzg_tip">红色圆片是满足 filter 条件（偶数）的元素。</p>
+      <pre class="fzg_code">var fzg_nums = [1, 2, 3, 4, 5, 6, 7, 8];
+fzg_nums.<b>map</b>(fzg_x => fzg_x * 2)                  // 每个元素 ×2
+fzg_nums.<b>filter</b>(fzg_x => fzg_x % 2 === 0)         // 筛出偶数
+fzg_nums.<b>reduce</b>((fzg_a, fzg_b) => fzg_a + fzg_b)  // 累加成 1 个值</pre>
+      <div id="fzg_flow_map" class="fzg_flow-row"><span class="fzg_flow-label">map ×2 →</span></div>
+      <div id="fzg_flow_filter" class="fzg_flow-row"><span class="fzg_flow-label">filter 偶数 →</span></div>
+      <div id="fzg_flow_reduce" class="fzg_flow-row"><span class="fzg_flow-label">reduce 求和 →</span></div>
+    </div>
+
+    <!-- 三、sort / reverse 排序可视化 -->
+    <div class="fzg_card">
+      <h3>三、sort 与 reverse —— 元素重新排队</h3>
+      <p class="fzg_tip">sort 不传比较函数时按"字符串"排序（20 会排在 3 前面），传 (a,b) =&gt; a-b 才是数字升序。</p>
+      <pre class="fzg_code" id="fzg_code_sort"></pre>
+      <div id="fzg_box_sort" class="fzg_boxrow"></div>
+      <button class="fzg_btn fzg_blue" id="fzg_btn_sortup">sort((a,b) =&gt; a-b) 升序</button>
+      <button class="fzg_btn fzg_blue" id="fzg_btn_sortdown">sort((a,b) =&gt; b-a) 降序</button>
+      <button class="fzg_btn fzg_orange" id="fzg_btn_reverse">reverse() 整体翻转</button>
+      <button class="fzg_btn fzg_orange" id="fzg_btn_sortstr">sort() 字符串排序(坑)</button>
+      <div id="fzg_log_sort" class="fzg_out"></div>
+    </div>
+
+    <!-- 四、查找与其他常用方法 -->
+    <div class="fzg_card">
+      <h3>四、查找、拼接与遍历</h3>
+      <pre class="fzg_code">var fzg_fruits = ["苹果", "香蕉", "橘子", "香蕉"];
+fzg_fruits.<b>indexOf</b>("香蕉")        // 查下标，1
+fzg_fruits.<b>includes</b>("橘子")       // 是否存在，true
+fzg_fruits.<b>concat</b>(["葡萄"])       // 拼接新数组
+fzg_fruits.<b>join</b>("、")             // 拼成字符串
+fzg_fruits.<b>forEach</b>(...)           // 逐个遍历</pre>
+      <div id="fzg_out_misc" class="fzg_out"></div>
+    </div>
+
+    <!-- 五、速查表 -->
+    <div class="fzg_card">
+      <h3>五、主要数组方法速查表</h3>
+      <table class="fzg_table">
+        <tr><th>方法</th><th>作用</th><th>改变原数组</th><th>返回值</th></tr>
+        <tr><td>push / pop</td><td>尾部添加 / 删除</td><td><span class="fzg_badge fzg_yes">是</span></td><td>新长度 / 被删元素</td></tr>
+        <tr><td>unshift / shift</td><td>头部添加 / 删除</td><td><span class="fzg_badge fzg_yes">是</span></td><td>新长度 / 被删元素</td></tr>
+        <tr><td>splice</td><td>任意位置增删替换</td><td><span class="fzg_badge fzg_yes">是</span></td><td>被删元素数组</td></tr>
+        <tr><td>sort / reverse</td><td>排序 / 翻转</td><td><span class="fzg_badge fzg_yes">是</span></td><td>原数组（已变）</td></tr>
+        <tr><td>map</td><td>逐个变换，生成新数组</td><td><span class="fzg_badge fzg_no">否</span></td><td>新数组</td></tr>
+        <tr><td>filter</td><td>按条件筛选</td><td><span class="fzg_badge fzg_no">否</span></td><td>新数组</td></tr>
+        <tr><td>reduce</td><td>累计归约为一个值</td><td><span class="fzg_badge fzg_no">否</span></td><td>累计结果</td></tr>
+        <tr><td>slice</td><td>截取一段</td><td><span class="fzg_badge fzg_no">否</span></td><td>新数组</td></tr>
+        <tr><td>concat / join</td><td>拼接数组 / 转字符串</td><td><span class="fzg_badge fzg_no">否</span></td><td>新数组 / 字符串</td></tr>
+        <tr><td>indexOf / includes</td><td>查找下标 / 是否存在</td><td><span class="fzg_badge fzg_no">否</span></td><td>数字 / 布尔值</td></tr>
+        <tr><td>find / findIndex</td><td>按条件找元素 / 下标</td><td><span class="fzg_badge fzg_no">否</span></td><td>元素或 undefined / 数字</td></tr>
+        <tr><td>forEach</td><td>纯遍历，无返回</td><td><span class="fzg_badge fzg_maybe">看回调</span></td><td>undefined</td></tr>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    // ===== 工具：渲染方块数组 =====
+    function fzg_renderBoxes(el, arr) {
+      el.innerHTML = "";
+      arr.forEach(function (fzg_v, fzg_i) {
+        var fzg_box = document.createElement("span");
+        fzg_box.className = "fzg_box";
+        fzg_box.innerHTML = fzg_v + "<small>[" + fzg_i + "]</small>";
+        el.appendChild(fzg_box);
+      });
+      if (arr.length === 0) {
+        el.innerHTML = '<span style="color:#999;font-size:13px;">（数组已空）</span>';
+      }
+    }
+
+    // ===== 一、增删方法交互 =====
+    var fzg_initial = [5, 12, 8, 23, 2];
+    var fzg_arr = fzg_initial.slice();   // slice 复制，不动原始数据
+    var fzg_boxArrEl = document.getElementById("fzg_box_arr");
+    var fzg_logArrEl = document.getElementById("fzg_log_arr");
+    var fzg_codeArrEl = document.getElementById("fzg_code_arr");
+
+    function fzg_showArr(code, ret) {
+      fzg_codeArrEl.textContent = "当前数组: " + JSON.stringify(fzg_arr);
+      if (code) {
+        fzg_logArrEl.textContent += "> " + code + "   // 返回: " + ret + "\n";
+        console.log(code, "=>", ret);
+      }
+      fzg_renderBoxes(fzg_boxArrEl, fzg_arr);
+    }
+    fzg_showArr();
+
+    document.getElementById("fzg_btn_push").onclick = function () {
+      fzg_showArr("fzg_arr.push(99)", fzg_arr.push(99));
+    };
+    document.getElementById("fzg_btn_pop").onclick = function () {
+      var fzg_r = fzg_arr.pop();
+      fzg_showArr("fzg_arr.pop()", fzg_r);
+    };
+    document.getElementById("fzg_btn_unshift").onclick = function () {
+      fzg_showArr("fzg_arr.unshift(1)", fzg_arr.unshift(1));
+    };
+    document.getElementById("fzg_btn_shift").onclick = function () {
+      var fzg_r = fzg_arr.shift();
+      fzg_showArr("fzg_arr.shift()", fzg_r);
+    };
+    document.getElementById("fzg_btn_splice").onclick = function () {
+      var fzg_r = fzg_arr.splice(1, 2);
+      fzg_showArr("fzg_arr.splice(1, 2)", JSON.stringify(fzg_r));
+    };
+    document.getElementById("fzg_btn_reset").onclick = function () {
+      fzg_arr = fzg_initial.slice();
+      fzg_showArr("fzg_arr = fzg_initial.slice()", "已重置");
+    };
+
+    // ===== 二、map / filter / reduce 流水线 =====
+    var fzg_nums = [1, 2, 3, 4, 5, 6, 7, 8];
+    function fzg_renderFlow(id, label, values, isHot) {
+      var fzg_el = document.getElementById(id);
+      values.forEach(function (fzg_v) {
+        var fzg_chip = document.createElement("span");
+        fzg_chip.className = "fzg_chip" + (isHot(fzg_v) ? " fzg_hot" : "");
+        fzg_chip.textContent = fzg_v;
+        fzg_el.appendChild(fzg_chip);
+      });
+      var fzg_note = document.createElement("span");
+      fzg_note.style.cssText = "font-size:12px;color:#888;margin-left:6px;";
+      fzg_note.textContent = label;
+      fzg_el.appendChild(fzg_note);
+    }
+    // 原始数组
+    fzg_renderFlow("fzg_flow_map", "", [], function () { return false; });
+    var fzg_srcEl = document.getElementById("fzg_flow_map");
+    var fzg_srcLabel = document.createElement("span");
+    fzg_srcLabel.className = "fzg_flow-label";
+    fzg_srcLabel.textContent = "原数组 →";
+    fzg_srcEl.insertBefore(fzg_srcLabel, fzg_srcEl.firstChild);
+    fzg_nums.forEach(function (fzg_v) {
+      var fzg_chip = document.createElement("span");
+      fzg_chip.className = "fzg_chip" + (fzg_v % 2 === 0 ? " fzg_hot" : "");
+      fzg_chip.textContent = fzg_v;
+      fzg_srcEl.appendChild(fzg_chip);
+    });
+    // map
+    fzg_renderFlow("fzg_flow_map", "（每个 ×2，长度不变）",
+      fzg_nums.map(function (fzg_x) { return fzg_x * 2; }),
+      function () { return false; });
+    // filter
+    fzg_renderFlow("fzg_flow_filter", "（只剩偶数，长度变短）",
+      fzg_nums.filter(function (fzg_x) { return fzg_x % 2 === 0; }),
+      function () { return true; });
+    // reduce
+    fzg_renderFlow("fzg_flow_reduce", "（8 个数累计成 1 个值）",
+      [fzg_nums.reduce(function (fzg_a, fzg_b) { return fzg_a + fzg_b; })],
+      function () { return true; });
+    console.log("map:", fzg_nums.map(function (x) { return x * 2; }));
+    console.log("filter:", fzg_nums.filter(function (x) { return x % 2 === 0; }));
+    console.log("reduce:", fzg_nums.reduce(function (a, b) { return a + b; }));
+
+    // ===== 三、sort / reverse 交互 =====
+    var fzg_sortArr = [23, 2, 56, 9, 14];
+    var fzg_boxSortEl = document.getElementById("fzg_box_sort");
+    var fzg_logSortEl = document.getElementById("fzg_log_sort");
+    var fzg_codeSortEl = document.getElementById("fzg_code_sort");
+
+    function fzg_showSort(code) {
+      fzg_codeSortEl.textContent = "当前数组: " + JSON.stringify(fzg_sortArr);
+      if (code) {
+        fzg_logSortEl.textContent += "> " + code + "\n";
+        console.log(code, "=>", fzg_sortArr);
+      }
+      fzg_renderBoxes(fzg_boxSortEl, fzg_sortArr);
+    }
+    fzg_showSort();
+
+    document.getElementById("fzg_btn_sortup").onclick = function () {
+      fzg_sortArr.sort(function (fzg_a, fzg_b) { return fzg_a - fzg_b; });
+      fzg_showSort("fzg_sortArr.sort((a,b) => a-b)");
+    };
+    document.getElementById("fzg_btn_sortdown").onclick = function () {
+      fzg_sortArr.sort(function (fzg_a, fzg_b) { return fzg_b - fzg_a; });
+      fzg_showSort("fzg_sortArr.sort((a,b) => b-a)");
+    };
+    document.getElementById("fzg_btn_reverse").onclick = function () {
+      fzg_sortArr.reverse();
+      fzg_showSort("fzg_sortArr.reverse()");
+    };
+    document.getElementById("fzg_btn_sortstr").onclick = function () {
+      fzg_sortArr = [23, 2, 56, 9, 14];
+      fzg_sortArr.sort();
+      fzg_showSort("[23,2,56,9,14].sort()   // 按字符串排，2 在 14 后面");
+    };
+
+    // ===== 四、查找、拼接与遍历 =====
+    var fzg_fruits = ["苹果", "香蕉", "橘子", "香蕉"];
+    var fzg_miscLines = [
+      'fzg_fruits.indexOf("香蕉")  →  ' + fzg_fruits.indexOf("香蕉") + "（只报第一个）",
+      'fzg_fruits.includes("橘子") →  ' + fzg_fruits.includes("橘子"),
+      'fzg_fruits.concat(["葡萄"]) →  ' + JSON.stringify(fzg_fruits.concat(["葡萄"])),
+      'fzg_fruits.join("、")       →  ' + fzg_fruits.join("、"),
+      'fzg_fruits.slice(1, 3)      →  ' + JSON.stringify(fzg_fruits.slice(1, 3)) + "（截取不动原数组）"
+    ];
+    var fzg_miscText = "";
+    fzg_fruits.forEach(function (fzg_f, fzg_i) {
+      fzg_miscText += "forEach 遍历 [" + fzg_i + "] = " + fzg_f + "\n";
+    });
+    document.getElementById("fzg_out_misc").textContent = fzg_miscLines.join("\n") + "\n" + fzg_miscText;
+    console.log(fzg_miscLines);
+  </script>
+</body>
+</html>

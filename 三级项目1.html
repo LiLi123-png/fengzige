@@ -1,0 +1,417 @@
+<!--
+  姓名：冯子格
+  日期：2026-10-29
+  功能：三级项目——网页元素设计。按《高级网页设计I 实验指导书》要求，用 HTML+CSS 完成
+        导航、一左一右、上图下文、左图右文、列表、图表等典型网页元素的静态设计。
+        使用 flex 布局，不使用 float、表格布局、第三方库和 CDN，无交互与动画效果。
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>网页元素设计 - 三级项目 - 冯子格</title>
+  <style>
+    /* ========== 全局公共 CSS ========== */
+    :root {
+      --fzg_primary: #2f6fd2;      /* 主题蓝 */
+      --fzg_primary_dark: #245aa8; /* 深蓝（导航底色） */
+      --fzg_bg: #f0f2f5;           /* 页面底色 */
+      --fzg_card: #ffffff;         /* 卡片底色 */
+      --fzg_text: #333333;         /* 主文字 */
+      --fzg_text2: #666666;        /* 次要文字 */
+      --fzg_muted: #999999;        /* 辅助文字 */
+      --fzg_line: #e8e8e8;         /* 分隔线 */
+      --fzg_gap: 16px;             /* 统一间距 */
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      font-size: 14px;
+      color: var(--fzg_text);
+      background: var(--fzg_bg);
+      line-height: 1.7;
+    }
+    ul { list-style: none; }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+
+    /* ========== 一、导航（典型部分：导航） ========== */
+    .fzg_nav {
+      background: var(--fzg_primary_dark);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 56px;
+      position: sticky;
+      top: 0;
+    }
+    .fzg_nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 17px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .fzg_nav-logo img { width: 24px; height: 24px; }
+    .fzg_nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .fzg_nav-menu a {
+      padding: 6px 16px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .fzg_nav-menu a.fzg_active,
+    .fzg_nav-menu a:hover { background: var(--fzg_primary); }
+    .fzg_nav-search {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 15px;
+      padding: 4px 12px;
+    }
+    .fzg_nav-search img { width: 16px; height: 16px; }
+    .fzg_nav-search span { font-size: 13px; color: rgba(255, 255, 255, 0.8); }
+
+    /* ========== 页面主体：一左一右布局（典型部分：一左一右） ========== */
+    .fzg_main {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: flex-start;
+      gap: var(--fzg_gap);
+      padding: var(--fzg_gap) 16px 32px;
+    }
+    .fzg_content { flex: 1; min-width: 0; }      /* 左侧主栏 */
+    .fzg_aside { width: 300px; flex-shrink: 0; } /* 右侧边栏 */
+
+    /* ========== 卡片公共样式（CSS 复用） ========== */
+    .fzg_card {
+      background: var(--fzg_card);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+      margin-bottom: var(--fzg_gap);
+    }
+    .fzg_card-body { padding: 16px; }
+    .fzg_card-title { font-size: 17px; font-weight: bold; margin-bottom: 8px; }
+    .fzg_card-text { color: var(--fzg_text2); font-size: 13px; }
+    .fzg_card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      color: var(--fzg_muted);
+      font-size: 12px;
+    }
+    .fzg_card-meta .fzg_meta-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .fzg_meta-icon {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .fzg_meta-icon img { width: 14px; height: 14px; }
+
+    /* ========== 二、上图下文（典型部分：上图下文） ========== */
+    .fzg_hero > img { width: 100%; height: 320px; object-fit: cover; }
+    .fzg_hero-tag {
+      display: inline-block;
+      background: var(--fzg_primary);
+      color: #fff;
+      font-size: 12px;
+      padding: 2px 10px;
+      border-radius: 3px;
+      margin-bottom: 8px;
+    }
+
+    /* ========== 三、左图右文（典型部分：左图右文） ========== */
+    .fzg_media {
+      display: flex;
+      gap: 14px;
+    }
+    .fzg_media > img {
+      width: 180px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+    .fzg_media-body {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .fzg_media-body .fzg_card-text {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;    /* 多行溢出省略 */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* ========== 四、列表（典型部分：列表） ========== */
+    .fzg_panel-title {
+      font-size: 15px;
+      font-weight: bold;
+      padding: 14px 16px 10px;
+      border-bottom: 1px solid var(--fzg_line);
+    }
+    .fzg_list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--fzg_line);
+      font-size: 13px;
+    }
+    .fzg_list li:last-child { border-bottom: none; }
+    .fzg_list li:hover { background: #f7f9fc; }
+    .fzg_list .fzg_item-title {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;   /* 单行溢出省略 */
+      margin-right: 10px;
+    }
+    .fzg_list li:hover .fzg_item-title { color: var(--fzg_primary); }
+    .fzg_list .fzg_item-extra { color: var(--fzg_muted); font-size: 12px; flex-shrink: 0; }
+    .fzg_item-no {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      background: #eef3fb;
+      color: var(--fzg_primary);
+      font-size: 12px;
+      text-align: center;
+      line-height: 20px;
+      margin-right: 10px;
+      flex-shrink: 0;
+    }
+
+    /* ========== 五、图表（纯 CSS 柱状图，满足"至少两处有图片或图表"） ========== */
+    .fzg_chart {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-around;
+      height: 150px;
+      padding: 10px 16px 0;
+    }
+    .fzg_chart-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      width: 26px;
+    }
+    .fzg_chart-bar {
+      width: 100%;
+      background: var(--fzg_primary);
+      border-radius: 3px 3px 0 0;
+      opacity: 0.9;
+    }
+    .fzg_chart-col:nth-child(1) .fzg_chart-bar { height: 60%; }
+    .fzg_chart-col:nth-child(2) .fzg_chart-bar { height: 85%; background: #5b8fe3; }
+    .fzg_chart-col:nth-child(3) .fzg_chart-bar { height: 45%; }
+    .fzg_chart-col:nth-child(4) .fzg_chart-bar { height: 95%; background: #245aa8; }
+    .fzg_chart-col:nth-child(5) .fzg_chart-bar { height: 70%; }
+    .fzg_chart-col:nth-child(6) .fzg_chart-bar { height: 55%; background: #5b8fe3; }
+    .fzg_chart-col:nth-child(7) .fzg_chart-bar { height: 35%; }
+    .fzg_chart-num { font-size: 11px; color: var(--fzg_text2); }
+    .fzg_chart-week {
+      display: flex;
+      justify-content: space-around;
+      padding: 0 16px 12px;
+      font-size: 11px;
+      color: var(--fzg_muted);
+    }
+    .fzg_chart-week span { width: 26px; text-align: center; }
+
+    /* ========== 页脚 ========== */
+    .fzg_footer {
+      background: var(--fzg_primary_dark);
+      color: rgba(255, 255, 255, 0.75);
+      text-align: center;
+      padding: 18px 16px;
+      font-size: 12px;
+    }
+
+    /* ========== 响应式：多视口宽度测试 ========== */
+    @media (max-width: 900px) {
+      .fzg_main { flex-direction: column; }   /* 一左一右改为上下堆叠 */
+      .fzg_aside { width: 100%; }
+      .fzg_hero img { height: 220px; }
+    }
+    @media (max-width: 560px) {
+      .fzg_nav-menu a { padding: 6px 8px; font-size: 13px; }
+      .fzg_nav-search span { display: none; }
+      .fzg_media img { width: 120px; height: 90px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 一、导航 -->
+  <nav class="fzg_nav">
+    <a class="fzg_nav-logo" href="#">
+      <img src="font/首页.png" alt="logo">
+      高级网页设计
+    </a>
+    <ul class="fzg_nav-menu">
+      <li><a class="fzg_active" href="#">首页</a></li>
+      <li><a href="#">课程</a></li>
+      <li><a href="#">作品</a></li>
+      <li><a href="#">实验</a></li>
+      <li><a href="#">关于</a></li>
+    </ul>
+    <div class="fzg_nav-search">
+      <img src="font/搜索.png" alt="搜索图标">
+      <span>搜索课程 / 实验</span>
+    </div>
+  </nav>
+
+  <!-- 二、主体：一左一右（左：内容流；右：侧边栏） -->
+  <main class="fzg_main">
+
+    <!-- 左侧主栏 -->
+    <div class="fzg_content">
+
+      <!-- 上图下文卡片 -->
+      <article class="fzg_card fzg_hero">
+        <img src="img/1.jpg" alt="网页设计主图">
+        <div class="fzg_card-body">
+          <span class="fzg_hero-tag">课程重点</span>
+          <h2 class="fzg_card-title">HTML 语义化与 Flex 弹性布局：从设计图到网页</h2>
+          <p class="fzg_card-text">
+            本周课程围绕"网页元素设计"展开：根据设计图测量元素宽度、高度与颜色，
+            使用语义化 HTML 元素组织内容，并采用 Flex 或 Grid 布局完成与设计图一致的
+            静态页面。要求实现上图下文、左图右文、一左一右等典型版式。
+          </p>
+          <div class="fzg_card-meta">
+            <span>大连东软信息学院 · 高级网页设计I</span>
+            <span class="fzg_meta-right">
+              <span class="fzg_meta-icon"><img src="font/点赞.png" alt="点赞">238</span>
+              <span class="fzg_meta-icon"><img src="font/收藏.png" alt="收藏">96</span>
+            </span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 左图右文卡片 1 -->
+      <article class="fzg_card">
+        <div class="fzg_card-body fzg_media">
+          <img src="img/2.jpg" alt="CSS 选择器配图">
+          <div class="fzg_media-body">
+            <h3 class="fzg_card-title">CSS 选择器进阶：从基础到 CSS Dinner</h3>
+            <p class="fzg_card-text">
+              复习标签、类、id、后代、群组选择器与伪类。实验预习要求完成 CSS Dinner
+              前 11 关，掌握属性选择器与结构伪类的用法，注意 CSS 样式复用，
+              相同样式不要写多个选择器。
+            </p>
+            <div class="fzg_card-meta">
+              <span>2026-10-20</span>
+              <span class="fzg_meta-right">
+                <span class="fzg_meta-icon"><img src="font/点赞.png" alt="点赞">56</span>
+                <span class="fzg_meta-icon"><img src="font/更多.png" alt="更多"></span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 左图右文卡片 2 -->
+      <article class="fzg_card">
+        <div class="fzg_card-body fzg_media">
+          <img src="img/3.jpg" alt="JavaScript 基础配图">
+          <div class="fzg_media-body">
+            <h3 class="fzg_card-title">JavaScript 基础：数据类型、程序结构与数组方法</h3>
+            <p class="fzg_card-text">
+              掌握六种基础数据类型、顺序/分支/循环三种程序结构，熟悉 push、pop、
+              map、filter、reduce 等主要数组方法。配套课堂实践已发布，
+              请结合数7游戏与循环演示页面完成练习。
+            </p>
+            <div class="fzg_card-meta">
+              <span>2026-10-27</span>
+              <span class="fzg_meta-right">
+                <span class="fzg_meta-icon"><img src="font/点赞.png" alt="点赞">102</span>
+                <span class="fzg_meta-icon"><img src="font/分享.png" alt="分享">18</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- 右侧边栏 -->
+    <aside class="fzg_aside">
+
+      <!-- 列表面板 -->
+      <section class="fzg_card">
+        <h3 class="fzg_panel-title">实验任务清单</h3>
+        <ul class="fzg_list">
+          <li>
+            <span class="fzg_item-no">1</span>
+            <span class="fzg_item-title">完成一左一右基础网页元素项目</span>
+            <span class="fzg_item-extra">已完成</span>
+          </li>
+          <li>
+            <span class="fzg_item-no">2</span>
+            <span class="fzg_item-title">完成上图下文基础网页元素项目</span>
+            <span class="fzg_item-extra">已完成</span>
+          </li>
+          <li>
+            <span class="fzg_item-no">3</span>
+            <span class="fzg_item-title">CSS Dinner 前 11 关通关</span>
+            <span class="fzg_item-extra">已完成</span>
+          </li>
+          <li>
+            <span class="fzg_item-no">4</span>
+            <span class="fzg_item-title">三级项目：三个典型部分设计</span>
+            <span class="fzg_item-extra">进行中</span>
+          </li>
+          <li>
+            <span class="fzg_item-no">5</span>
+            <span class="fzg_item-title">实验报告与源码压缩包提交</span>
+            <span class="fzg_item-extra">待完成</span>
+          </li>
+        </ul>
+      </section>
+
+      <!-- 图表面板（纯 CSS 柱状图） -->
+      <section class="fzg_card">
+        <h3 class="fzg_panel-title">本周学习时长（小时/天）</h3>
+        <div class="fzg_chart">
+          <div class="fzg_chart-col"><div class="fzg_chart-bar"></div><span class="fzg_chart-num">3</span></div>
+          <div class="fzg_chart-col"><div class="fzg_chart-bar"></div><span class="fzg_chart-num">4.5</span></div>
+          <div class="fzg_chart-col"><div class="fzg_chart-bar"></div><span class="fzg_chart-num">2</span></div>
+          <div class="fzg_chart-col"><div class="fzg_chart-bar"></div><span class="fzg_chart-num">5</span></div>
+          <div class="fzg_chart-col"><div class="fzg_chart-bar"></div><span class="fzg_chart-num">3.5</span></div>
+          <div class="fzg_chart-col"><div class="fzg_chart-bar"></div><span class="fzg_chart-num">3</span></div>
+          <div class="fzg_chart-col"><div class="fzg_chart-bar"></div><span class="fzg_chart-num">1.5</span></div>
+        </div>
+        <div class="fzg_chart-week">
+          <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+        </div>
+      </section>
+    </aside>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="fzg_footer">
+    《高级网页设计I》三级项目 · 网页元素设计 · 冯子格 228 · 大连东软信息学院
+  </footer>
+
+</body>
+</html>
